@@ -792,32 +792,7 @@
 </head>
 <body>
 
-<!-- SETUP -->
-<div class="setup-overlay" id="setupOverlay">
-  <div class="setup-box">
-    <div class="setup-logo">
-      <div class="setup-logo-mark">✦</div>
-      <div class="setup-logo-text">Zaya IA</div>
-    </div>
-    <h2>Configurar POC</h2>
-    <p>Insira as chaves das APIs para rodar as duas versões ao vivo. Se não tiver a chave do GPT, o modo demo usa respostas simuladas para comparação.</p>
-
-    <div class="key-group">
-      <div class="key-label"><span class="key-dot-claude" style="width:6px;height:6px;border-radius:50%;background:var(--claude);display:inline-block"></span> Anthropic (Claude)</div>
-      <input class="key-field" type="password" id="anthropicKey" placeholder="sk-ant-api03-..." />
-    </div>
-
-    <div class="key-group">
-      <div class="key-label"><span style="width:6px;height:6px;border-radius:50%;background:var(--gpt);display:inline-block"></span> OpenAI (GPT-4o)</div>
-      <input class="key-field" type="password" id="openaiKey" placeholder="sk-..." />
-    </div>
-
-    <div class="key-note">🔒 As chaves ficam apenas na memória desta sessão. Nunca são enviadas a servidores externos.</div>
-
-    <button class="start-btn" onclick="startPOC()">Iniciar POC ao vivo →</button>
-    <button class="skip-btn" onclick="startDemo()">Rodar em modo demonstração (sem APIs)</button>
-  </div>
-</div>
+<!-- Setup removido — chaves configuradas diretamente no código -->
 
 <!-- HEADER -->
 <header>
@@ -983,57 +958,89 @@ ESTILO DE COMUNICAÇÃO:
 - Uma pergunta por vez, nunca duas
 - Usa o nome da pessoa quando sabe
 - Valida SEMPRE o que a pessoa disse antes de avançar
-- Emojis com moderação — quando reforçam emoção genuína
+- Emojis com moderação — apenas quando reforçam emoção genuína
 - Linguagem natural, como WhatsApp de verdade
 - NUNCA use: "Certamente!", "Claro!", "Estou aqui para ajudar!", "Ótima pergunta!"
 
-FLUXO DE QUALIFICAÇÃO (nessa ordem):
-1. Abertura calorosa com apresentação breve
+FLUXO DE QUALIFICAÇÃO (nessa ordem obrigatória):
+1. Abertura calorosa com apresentação breve — responda em até 2 minutos do contato
 2. Entender a MOTIVAÇÃO (por que quer um negócio próprio agora?)
 3. Entender o CONTEXTO DE VIDA (empregado? empreendedor? quer complementar renda?)
 4. Entender o momento FINANCEIRO (capital disponível — sem citar números, deixa a pessoa falar primeiro)
 5. Entender QUEM DECIDE JUNTO (cônjuge, sócio, familiar?)
-6. Entender URGÊNCIA (prazo que pensa para começar)
-7. Quando qualificado: propor conexão natural com o especialista
+6. Entender URGÊNCIA (prazo que pensa para começar — menos de 3 meses é sinal forte)
+7. Verificar ENGAJAMENTO (o lead está respondendo ativamente? fazendo perguntas?)
+8. Quando qualificado: propor conexão natural com o especialista
+
+CLASSIFICAÇÃO DO LEAD — aplique ao longo da conversa:
+
+LEAD QUENTE — ação imediata, conectar ao consultor:
+- Respondeu dentro de 24h com mensagens ativas
+- Declarou capital disponível (qualquer valor — há formatos diferentes)
+- Demonstrou urgência: quer começar em até 3 meses
+- Fez perguntas sobre processo, lojas, funcionamento
+- Aceitou ou pediu reunião ou mais informações
+- Engajou com 3+ trocas de mensagem de forma ativa
+
+LEAD MORNO — nutrir e reativar em 15 dias:
+- Abriu a conversa mas não avançou nas perguntas de qualificação
+- Respondeu algumas perguntas mas sumiu depois
+- Mostrou interesse mas disse "preciso pensar" ou "não é agora"
+- Engajou 1 ou 2 vezes e esfriou
+
+LEAD FRIO — cadência longa ou descarte:
+- Sem perfil financeiro compatível após exploração suave
+- Não respondeu após 3 tentativas em momentos diferentes
+- Deixou claro que não tem intenção de decidir em menos de 1 ano
+
+COMO DETECTAR TEMPERATURA NA CONVERSA:
+- Quente: mensagens longas, perguntas específicas, responde rápido, usa palavras como "quero", "quando posso", "como funciona"
+- Morno: respostas curtas, "vou pensar", demora para responder, sem perguntas ativas
+- Frio: sem resposta, "não tenho dinheiro agora", "só estava curiosa", respostas de uma palavra
 
 COMO LIDAR COM OBJEÇÕES:
-- "Não tenho muito dinheiro": Explore o que eles têm, mencione que existem formas de financiamento, não feche portas
-- "Preciso pensar": Valide o tempo de reflexão, pergunte o que mais precisa entender antes de decidir
-- "É muito caro": Redirecione — "o que 'caro' significa pra você? Deixa eu entender melhor o seu cenário"
-- "Tenho medo de fracassar": Valide o medo, fale em suporte da rede, não prometa nada
-- "Meu cônjuge não topou ainda": Inclua a conversa, pergunte o que ele/ela teria dúvida
+- "Não tenho muito dinheiro": Explore o que têm, mencione que existem formas de financiamento, não feche portas
+- "Preciso pensar": Valide, pergunte o que mais precisa entender. Se morno, agende retorno em 15 dias
+- "É muito caro": Redirecione — pergunte o que significa caro no cenário da pessoa
+- "Tenho medo de fracassar": Valide o medo, fale no suporte da rede, nunca prometa nada
+- "Meu cônjuge não topou ainda": Inclua a conversa, pergunte o que ele ou ela teria de dúvida
+- "Só estava vendo": Não force — registre como frio, mantenha a porta aberta com gentileza
 
 REGRAS ABSOLUTAS:
 - NUNCA cite valores específicos (nem R$75k, nem R$150k, nem qualquer número)
 - NUNCA prometa retorno, lucro ou prazo de retorno de investimento
 - NUNCA minta sobre ser humana — se perguntada diretamente, seja honesta
 - NUNCA pressione — se o lead disse não ou não está pronto, respeite
-- Quando o lead estiver quente: diga que vai conectar com o especialista e encerre com elegância
+- NUNCA faça mais de 3 tentativas sem resposta — registre como frio
+- Responda SEMPRE dentro do contexto emocional do lead
 
-CRITÉRIO DE LEAD QUENTE (acione o handoff):
-- Demonstrou interesse genuíno em abrir uma unidade
-- Tem capital disponível (qualquer valor — existem formatos diferentes)
-- Prazo de decisão em até 6 meses
-- Já respondeu sobre quem decide junto
+AO FAZER HANDOFF (lead quente):
+"Pelo que você me contou, acho que vale demais uma conversa com nosso especialista — ele consegue montar um cenário real, sem enrolação, exatamente pro seu perfil. Posso já conectar vocês?"
 
-AO FAZER HANDOFF:
-Diga algo como: "Pelo que você me contou, acho que vale demais uma conversa com nosso especialista — ele consegue montar um cenário real, sem enrolação, exatamente pro seu perfil. Posso já conectar vocês?"`;
+AO REGISTRAR LEAD MORNO:
+"Entendo que você precisa de mais tempo — faz todo sentido. Posso te mandar algumas informações e a gente fala de novo daqui uns dias?"
+
+AO ENCERRAR COM LEAD FRIO:
+"Sem problema! Se em algum momento isso fizer mais sentido pra você, pode me chamar — estarei aqui."`;
 
 // ─── PROMPT PARA GERAR RESUMO ──────────────────────────────────────────────
-const SUMMARY_PROMPT = `Com base na conversa abaixo entre a Zaya (consultora) e um lead, gere um resumo estruturado em JSON para o consultor humano. 
+const SUMMARY_PROMPT = `Com base na conversa abaixo entre a Zaya (consultora) e um lead, gere um resumo estruturado em JSON para o consultor humano.
 
 Extraia exatamente estes campos (use null se não houver informação):
 {
   "nome": "nome da pessoa se mencionado",
   "motivacao": "por que quer um negócio próprio (resumo curto)",
-  "contexto_vida": "situação atual (emprego, etc)",
+  "contexto_vida": "situação atual (emprego, renda, perfil)",
   "capital": "o que disse sobre capital disponível",
   "decisores": "quem decide junto",
   "urgencia": "prazo para decidir",
+  "engajamento": "ALTO ou MÉDIO ou BAIXO — baseado na velocidade e qualidade das respostas",
   "objecoes": "objeções ou medos levantados",
-  "temperatura": "QUENTE | MORNO | FRIO",
-  "proximo_passo": "recomendação para o consultor",
-  "tom_emocional": "como o lead pareceu emocionalmente"
+  "temperatura": "QUENTE ou MORNO ou FRIO",
+  "justificativa_temperatura": "por que classificou dessa forma — cite sinais concretos da conversa",
+  "proximo_passo": "QUENTE: agendar reunião imediata | MORNO: reativar em 15 dias com conteúdo | FRIO: cadência longa ou descarte",
+  "tom_emocional": "como o lead pareceu emocionalmente",
+  "sla_resposta": "lead respondeu rápido menos de 24h ou demorou"
 }
 
 Responda APENAS com o JSON válido, sem texto adicional.
@@ -1041,11 +1048,11 @@ Responda APENAS com o JSON válido, sem texto adicional.
 CONVERSA:
 `;
 
+// ─── CHAVES DE API ─────────────────────────────────────────────────────────
 // ─── ESTADO ────────────────────────────────────────────────────────────────
-let anthropicKey = '';
-let openaiKey = '';
+// Chaves gerenciadas pelo Vercel via variáveis de ambiente (api/chat.js)
 let demoMode = false;
-let gptIsReal = false;
+let gptIsReal = true;
 
 const histories = { claude: [], gpt: [] };
 const responseTimes = { claude: [], gpt: [] };
@@ -1063,41 +1070,17 @@ const GPT_DEMO = [
 let gptDemoIdx = 0;
 
 // ─── SETUP ────────────────────────────────────────────────────────────────
-function startPOC() {
-  const ak = document.getElementById('anthropicKey').value.trim();
-  const ok = document.getElementById('openaiKey').value.trim();
-
-  if (!ak.startsWith('sk-ant')) {
-    alert('Chave Anthropic inválida. Deve começar com sk-ant-...');
-    return;
-  }
-
-  anthropicKey = ak;
-  openaiKey = ok;
-  demoMode = false;
-  gptIsReal = ok.startsWith('sk-');
-
-  document.getElementById('setupOverlay').style.display = 'none';
-
+// ─── AUTO-INICIALIZAÇÃO ────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
   const modePill = document.getElementById('modePill');
   modePill.className = 'mode-pill live';
-  modePill.textContent = gptIsReal ? '⚡ Modo live · ambas as APIs ativas' : '⚡ Modo live · Claude real · GPT simulado';
-
-  document.getElementById('pocModeLabel').textContent = gptIsReal ? 'POC ao vivo · ambas APIs' : 'POC · Claude ao vivo · GPT demo';
-
+  modePill.textContent = '⚡ Modo live · Claude + GPT-4o ativos';
+  document.getElementById('pocModeLabel').textContent = 'POC ao vivo · ambas APIs';
   initChats();
-}
+});
 
-function startDemo() {
-  demoMode = true;
-  document.getElementById('setupOverlay').style.display = 'none';
-
-  const modePill = document.getElementById('modePill');
-  modePill.className = 'mode-pill demo';
-  modePill.textContent = '◆ Modo demonstração · respostas simuladas';
-
-  initChats();
-}
+function startPOC() {}   // mantido por compatibilidade
+function startDemo() {}  // mantido por compatibilidade
 
 function initChats() {
   const openClaude = "Oi! 😊 Sou a Zaya, da equipe de expansão. Vi que você tem interesse em abrir uma lavanderia — que ótimo! Posso te fazer algumas perguntinhas rápidas pra entender melhor o que faz sentido pra você?";
@@ -1212,19 +1195,14 @@ async function sendMessage(panel) {
 
 // ─── APIS ──────────────────────────────────────────────────────────────────
 async function callClaude(history) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch('/api/chat', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': anthropicKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 300,
+      provider: 'anthropic',
       system: ZAYA_PROMPT,
-      messages: history
+      messages: history,
+      max_tokens: 300
     })
   });
   if (!res.ok) throw new Error('Claude API: ' + res.status);
@@ -1237,16 +1215,13 @@ async function callGPT(history) {
     { role: 'system', content: ZAYA_PROMPT },
     ...history
   ];
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+  const res = await fetch('/api/chat', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + openaiKey
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'gpt-4o',
-      max_tokens: 300,
-      messages
+      provider: 'openai',
+      messages,
+      max_tokens: 300
     })
   });
   if (!res.ok) throw new Error('GPT API: ' + res.status);
@@ -1298,23 +1273,15 @@ async function generateSummary(panel) {
   try {
     let jsonStr;
 
-    if (!demoMode && anthropicKey) {
+    if (!demoMode) {
       // Usa Claude para gerar o resumo sempre
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': anthropicKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 600,
-          messages: [{
-            role: 'user',
-            content: SUMMARY_PROMPT + conversation
-          }]
+          provider: 'anthropic',
+          messages: [{ role: 'user', content: SUMMARY_PROMPT + conversation }],
+          max_tokens: 600
         })
       });
       const data = await res.json();

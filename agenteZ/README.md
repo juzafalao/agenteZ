@@ -1,16 +1,17 @@
-# Josi IA — Deploy
+# Zaya IA — Agente de Vendas para Franquias
 
 ## Páginas
-- `/` → Apresentação principal (josi-apresentacao.html)
-- `/poc` → POC comparativo Claude vs GPT (josi-poc.html)
+- `/` → Apresentação da Zaya IA
+- `/poc` → POC ao vivo: Zaya Claude vs Zaya GPT-4o
 
-## Deploy no Vercel
-1. Acesse vercel.com e faça login
+## Como subir no Vercel
+1. Acesse vercel.com e faça login com GitHub
 2. Clique em "Add New Project"
-3. Arraste esta pasta ou conecte via GitHub
+3. Selecione o repositório **agenteZ**
 4. Clique em Deploy — pronto!
 
 ## POC — Como usar
-- Abre /poc no navegador
-- Insira sua chave Anthropic (sk-ant-...) para rodar Claude de verdade
-- Ou clique em "modo demonstração" para testar sem chave
+- Abre `/poc` no navegador ou celular
+- As chaves já estão configuradas — é só conversar
+- Digite como se fosse um lead interessado em franquia
+- Após 3 mensagens aparece o botão "Gerar resumo para consultor"
