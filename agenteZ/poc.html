@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaya IA — POC: Claude vs GPT</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0f0a;
+    --surface: #141810;
+    --card: #191d14;
+    --border: #252a1f;
+    --border-light: #2e3527;
+    --claude: #a3e635;
+    --claude-dim: rgba(163,230,53,0.08);
+    --claude-glow: rgba(163,230,53,0.15);
+    --gpt: #fb923c;
+    --gpt-dim: rgba(251,146,60,0.08);
+    --gpt-glow: rgba(251,146,60,0.15);
+    --text: #d4dcc8;
+    --text-strong: #eef2e8;
+    --muted: #5c6650;
+    --muted2: #3d4435;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Grain texture overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* SETUP OVERLAY */
+  .setup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(12,15,10,0.97);
+    backdrop-filter: blur(16px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .setup-box {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 44px 40px;
+    max-width: 520px;
+    width: 100%;
+  }
+
+  .setup-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .setup-logo-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--claude), #65a30d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .setup-logo-text {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.5rem;
+    color: var(--text-strong);
+  }
+
+  .setup-box h2 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: 1.8rem;
+    color: var(--text-strong);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .setup-box p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  .key-group {
+    margin-bottom: 14px;
+  }
+
+  .key-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .key-dot-claude { width: 6px; height: 6px; border-radius: 50%; background: var(--claude); }
+  .key-dot-gpt { width: 6px; height: 6px; border-radius: 50%; background: var(--gpt); }
+
+  .key-field {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .key-field:focus { border-color: var(--border-light); }
+  .key-field::placeholder { color: var(--muted2); }
+
+  .key-note {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin: 8px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .start-btn {
+    width: 100%;
+    background: var(--claude);
+    color: #0c0f0a;
+    font-family: 'Geist', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+
+  .start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .skip-btn {
+    display: block;
+    text-align: center;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-top: 12px;
+    font-family: 'Geist', sans-serif;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    width: 100%;
+  }
+
+  .skip-btn:hover { color: var(--text); }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 48px 32px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .header-left {}
+
+  .poc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--claude-dim);
+    border: 1px solid rgba(163,230,53,0.15);
+    color: var(--claude);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+
+  .live-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--claude);
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  header h1 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--text-strong);
+  }
+
+  header h1 em {
+    font-style: italic;
+    color: var(--claude);
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    max-width: 380px;
+    margin-top: 10px;
+    line-height: 1.7;
+  }
+
+  .vs-chips {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .vs-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  .vs-chip.claude {
+    background: var(--claude-dim);
+    border: 1px solid rgba(163,230,53,0.2);
+    color: var(--claude);
+  }
+
+  .vs-chip.gpt {
+    background: var(--gpt-dim);
+    border: 1px solid rgba(251,146,60,0.2);
+    color: var(--gpt);
+  }
+
+  .vs-text {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ARENA */
+  .arena {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px 32px;
+  }
+
+  @media (max-width: 800px) {
+    .arena { grid-template-columns: 1fr; padding: 0 16px 24px; }
+    header { padding: 32px 16px 24px; }
+  }
+
+  /* CHAT PANEL */
+  .chat-panel {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--card);
+    height: 600px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+
+  .chat-panel.claude-panel { border-color: rgba(163,230,53,0.15); }
+  .chat-panel.gpt-panel { border-color: rgba(251,146,60,0.15); }
+
+  .panel-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+
+  .agent-avatar {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .claude-panel .agent-avatar { background: linear-gradient(135deg, var(--claude), #65a30d); }
+  .gpt-panel .agent-avatar { background: linear-gradient(135deg, var(--gpt), #ea580c); }
+
+  .agent-info { flex: 1; }
+
+  .agent-name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--text-strong);
+  }
+
+  .agent-model {
+    font-size: 0.68rem;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.03em;
+  }
+
+  .status-pill {
+    font-size: 0.62rem;
+    padding: 3px 9px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  .claude-panel .status-pill { background: rgba(163,230,53,0.08); color: var(--claude); border: 1px solid rgba(163,230,53,0.15); }
+  .gpt-panel .status-pill { background: rgba(251,146,60,0.08); color: var(--gpt); border: 1px solid rgba(251,146,60,0.15); }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.68rem;
+    padding: 4px 10px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Geist', sans-serif;
+  }
+
+  .reset-btn:hover { border-color: var(--border-light); color: var(--text); }
+
+  /* MESSAGES */
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+  }
+
+  .messages::-webkit-scrollbar { width: 3px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .msg-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    animation: msgIn 0.25s ease both;
+  }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg-row.user { flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+  }
+
+  .msg-row.agent .msg-avatar { background: var(--surface); border: 1px solid var(--border); }
+  .msg-row.user .msg-avatar { background: var(--surface); border: 1px solid var(--border); }
+
+  .bubble {
+    max-width: 80%;
+    padding: 9px 13px;
+    border-radius: 14px;
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  .msg-row.agent .bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+    color: var(--text);
+  }
+
+  .msg-row.user .bubble {
+    border-bottom-right-radius: 4px;
+    color: var(--text-strong);
+  }
+
+  .claude-panel .msg-row.user .bubble {
+    background: var(--claude-dim);
+    border: 1px solid rgba(163,230,53,0.15);
+  }
+
+  .gpt-panel .msg-row.user .bubble {
+    background: var(--gpt-dim);
+    border: 1px solid rgba(251,146,60,0.15);
+  }
+
+  .typing {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 10px 4px;
+  }
+
+  .typing span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    animation: bounce 1.2s ease-in-out infinite;
+  }
+
+  .typing span:nth-child(2) { animation-delay: 0.15s; }
+  .typing span:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+    30% { transform: translateY(-5px); opacity: 0.9; }
+  }
+
+  /* INPUT */
+  .input-area {
+    padding: 12px 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+
+  .chat-input {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: 'Geist', sans-serif;
+    font-size: 0.84rem;
+    resize: none;
+    min-height: 38px;
+    max-height: 90px;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+  }
+
+  .claude-panel .chat-input:focus { border-color: rgba(163,230,53,0.3); }
+  .gpt-panel .chat-input:focus { border-color: rgba(251,146,60,0.3); }
+  .chat-input::placeholder { color: var(--muted2); }
+
+  .send-btn {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .claude-panel .send-btn { background: var(--claude); color: #0c0f0a; }
+  .gpt-panel .send-btn { background: var(--gpt); color: #0c0f0a; }
+  .send-btn:hover { transform: scale(1.06); }
+  .send-btn:active { transform: scale(0.96); }
+  .send-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  /* LEAD SUMMARY SECTION */
+  .summary-section {
+    position: relative;
+    z-index: 10;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 800px) {
+    .summary-section { grid-template-columns: 1fr; padding: 0 16px 24px; }
+  }
+
+  .summary-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    min-height: 140px;
+  }
+
+  .summary-card.claude-summary { border-color: rgba(163,230,53,0.12); }
+  .summary-card.gpt-summary { border-color: rgba(251,146,60,0.12); }
+
+  .summary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .summary-title {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .summary-dot-claude { color: var(--claude); }
+  .summary-dot-gpt { color: var(--gpt); }
+
+  .summary-badge {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  .summary-badge.hot {
+    background: rgba(239,68,68,0.1);
+    color: #f87171;
+    border: 1px solid rgba(239,68,68,0.2);
+  }
+
+  .summary-badge.warm {
+    background: rgba(251,191,36,0.1);
+    color: #fbbf24;
+    border: 1px solid rgba(251,191,36,0.2);
+  }
+
+  .summary-badge.cold {
+    background: rgba(99,102,241,0.1);
+    color: #818cf8;
+    border: 1px solid rgba(99,102,241,0.2);
+  }
+
+  .summary-badge.pending {
+    background: var(--muted2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .summary-empty {
+    color: var(--muted2);
+    font-size: 0.82rem;
+    font-style: italic;
+  }
+
+  .summary-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .summary-row {
+    display: flex;
+    gap: 8px;
+    font-size: 0.8rem;
+  }
+
+  .summary-key {
+    color: var(--muted);
+    min-width: 100px;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+  }
+
+  .summary-val {
+    color: var(--text);
+  }
+
+  .generate-btn {
+    margin-top: 12px;
+    background: none;
+    border: 1px solid var(--border-light);
+    color: var(--text);
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Geist', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .generate-btn:hover { border-color: var(--muted); }
+
+  .claude-summary .generate-btn:hover { border-color: var(--claude); color: var(--claude); }
+  .gpt-summary .generate-btn:hover { border-color: var(--gpt); color: var(--gpt); }
+
+  /* SCOREBOARD */
+  .scoreboard {
+    position: relative;
+    z-index: 10;
+    max-width: 1280px;
+    margin: 0 auto 16px;
+    padding: 0 32px;
+  }
+
+  @media (max-width: 800px) {
+    .scoreboard { padding: 0 16px; }
+  }
+
+  .score-title {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .score-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 800px) { .score-grid { grid-template-columns: 1fr; } }
+
+  .score-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+
+  .score-card.claude-card { border-color: rgba(163,230,53,0.1); }
+  .score-card.gpt-card { border-color: rgba(251,146,60,0.1); }
+
+  .score-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .score-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .metric {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    gap: 10px;
+  }
+
+  .metric-name { color: var(--muted); width: 82px; flex-shrink: 0; }
+
+  .metric-bar-wrap {
+    flex: 1;
+    height: 3px;
+    background: var(--muted2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .metric-bar {
+    height: 100%;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .claude-card .metric-bar { background: var(--claude); }
+  .gpt-card .metric-bar { background: var(--gpt); }
+
+  .metric-val {
+    font-family: 'Geist Mono', monospace;
+    font-weight: 500;
+    font-size: 0.78rem;
+    min-width: 32px;
+    text-align: right;
+  }
+
+  .claude-card .metric-val { color: var(--claude); }
+  .gpt-card .metric-val { color: var(--gpt); }
+
+  /* FOOTER */
+  .footer-note {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted2);
+    font-size: 0.72rem;
+    position: relative;
+    z-index: 10;
+    font-family: 'Geist Mono', monospace;
+  }
+
+  /* MODE INDICATOR */
+  .mode-bar {
+    position: relative;
+    z-index: 10;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px 16px;
+  }
+
+  @media (max-width: 800px) { .mode-bar { padding: 0 16px 12px; } }
+
+  .mode-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+
+  .mode-pill.live { border-color: rgba(163,230,53,0.2); color: var(--claude); background: var(--claude-dim); }
+  .mode-pill.demo { border-color: rgba(251,146,60,0.2); color: var(--gpt); background: var(--gpt-dim); }
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-box">
+    <div class="setup-logo">
+      <div class="setup-logo-mark">✦</div>
+      <div class="setup-logo-text">Zaya IA</div>
+    </div>
+    <h2>Configurar POC</h2>
+    <p>Insira as chaves das APIs para rodar as duas versões ao vivo. Se não tiver a chave do GPT, o modo demo usa respostas simuladas para comparação.</p>
+
+    <div class="key-group">
+      <div class="key-label"><span class="key-dot-claude" style="width:6px;height:6px;border-radius:50%;background:var(--claude);display:inline-block"></span> Anthropic (Claude)</div>
+      <input class="key-field" type="password" id="anthropicKey" placeholder="sk-ant-api03-..." />
+    </div>
+
+    <div class="key-group">
+      <div class="key-label"><span style="width:6px;height:6px;border-radius:50%;background:var(--gpt);display:inline-block"></span> OpenAI (GPT-4o)</div>
+      <input class="key-field" type="password" id="openaiKey" placeholder="sk-..." />
+    </div>
+
+    <div class="key-note">🔒 As chaves ficam apenas na memória desta sessão. Nunca são enviadas a servidores externos.</div>
+
+    <button class="start-btn" onclick="startPOC()">Iniciar POC ao vivo →</button>
+    <button class="skip-btn" onclick="startDemo()">Rodar em modo demonstração (sem APIs)</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="poc-badge">
+      <span class="live-dot"></span>
+      <span id="pocModeLabel">POC · Agente Zaya</span>
+    </div>
+    <h1>Zaya <em>Claude</em><br>vs Zaya <em style="color:var(--gpt)">GPT</em></h1>
+    <p>Converse como um lead e sinta na prática a diferença de humanização entre os dois modelos.</p>
+  </div>
+  <div class="vs-chips">
+    <div class="vs-chip claude">✦ Zaya · Claude Sonnet</div>
+    <span class="vs-text">VS</span>
+    <div class="vs-chip gpt">◆ Zaya · GPT-4o</div>
+  </div>
+</header>
+
+<!-- MODE BAR -->
+<div class="mode-bar">
+  <span class="mode-pill" id="modePill">⚙ aguardando configuração</span>
+</div>
+
+<!-- ARENA -->
+<div class="arena">
+
+  <!-- CLAUDE -->
+  <div class="chat-panel claude-panel">
+    <div class="panel-header">
+      <div class="agent-avatar">✦</div>
+      <div class="agent-info">
+        <div class="agent-name">Zaya</div>
+        <div class="agent-model">Anthropic · claude-sonnet-4-20250514</div>
+      </div>
+      <span class="status-pill">● online</span>
+      <button class="reset-btn" onclick="resetChat('claude')">↺ Reset</button>
+    </div>
+    <div class="messages" id="claudeMessages"></div>
+    <div class="input-area">
+      <textarea class="chat-input" id="claudeInput" placeholder="Escreva como se fosse um lead..." rows="1"
+        onkeydown="handleKey(event,'claude')" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="claudeSend" onclick="sendMessage('claude')">➤</button>
+    </div>
+  </div>
+
+  <!-- GPT -->
+  <div class="chat-panel gpt-panel">
+    <div class="panel-header">
+      <div class="agent-avatar">◆</div>
+      <div class="agent-info">
+        <div class="agent-name">Zaya</div>
+        <div class="agent-model">OpenAI · gpt-4o</div>
+      </div>
+      <span class="status-pill">● online</span>
+      <button class="reset-btn" onclick="resetChat('gpt')">↺ Reset</button>
+    </div>
+    <div class="messages" id="gptMessages"></div>
+    <div class="input-area">
+      <textarea class="chat-input" id="gptInput" placeholder="Escreva como se fosse um lead..." rows="1"
+        onkeydown="handleKey(event,'gpt')" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="gptSend" onclick="sendMessage('gpt')">➤</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- LEAD SUMMARY -->
+<div class="summary-section">
+  <div class="summary-card claude-summary">
+    <div class="summary-header">
+      <div class="summary-title"><span class="summary-dot-claude">✦</span> Resumo do Lead · Claude</div>
+      <span class="summary-badge pending" id="claudeTemp">aguardando</span>
+    </div>
+    <div id="claudeSummaryContent">
+      <div class="summary-empty">O resumo aparece conforme a conversa avança...</div>
+    </div>
+    <button class="generate-btn" onclick="generateSummary('claude')" id="claudeSummaryBtn" style="display:none">⚡ Gerar resumo para consultor</button>
+  </div>
+
+  <div class="summary-card gpt-summary">
+    <div class="summary-header">
+      <div class="summary-title"><span class="summary-dot-gpt">◆</span> Resumo do Lead · GPT</div>
+      <span class="summary-badge pending" id="gptTemp">aguardando</span>
+    </div>
+    <div id="gptSummaryContent">
+      <div class="summary-empty">O resumo aparece conforme a conversa avança...</div>
+    </div>
+    <button class="generate-btn" onclick="generateSummary('gpt')" id="gptSummaryBtn" style="display:none">⚡ Gerar resumo para consultor</button>
+  </div>
+</div>
+
+<!-- SCOREBOARD -->
+<div class="scoreboard">
+  <div class="score-title">Análise comparativa de desempenho</div>
+  <div class="score-grid">
+    <div class="score-card claude-card">
+      <div class="score-label"><span style="color:var(--claude)">✦</span> Claude Sonnet</div>
+      <div class="score-metrics">
+        <div class="metric">
+          <span class="metric-name">Naturalidade</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" id="claude-nat" style="width:0%"></div></div>
+          <span class="metric-val" id="claude-nat-val">–</span>
+        </div>
+        <div class="metric">
+          <span class="metric-name">Contexto</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" id="claude-ctx" style="width:0%"></div></div>
+          <span class="metric-val" id="claude-ctx-val">–</span>
+        </div>
+        <div class="metric">
+          <span class="metric-name">Empatia</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" id="claude-emp" style="width:0%"></div></div>
+          <span class="metric-val" id="claude-emp-val">–</span>
+        </div>
+        <div class="metric">
+          <span class="metric-name">Velocidade</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" id="claude-spd" style="width:0%"></div></div>
+          <span class="metric-val" id="claude-spd-val">–</span>
+        </div>
+      </div>
+    </div>
+    <div class="score-card gpt-card">
+      <div class="score-label"><span style="color:var(--gpt)">◆</span> GPT-4o</div>
+      <div class="score-metrics">
+        <div class="metric">
+          <span class="metric-name">Naturalidade</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" id="gpt-nat" style="width:0%"></div></div>
+          <span class="metric-val" id="gpt-nat-val">–</span>
+        </div>
+        <div class="metric">
+          <span class="metric-name">Contexto</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" id="gpt-ctx" style="width:0%"></div></div>
+          <span class="metric-val" id="gpt-ctx-val">–</span>
+        </div>
+        <div class="metric">
+          <span class="metric-name">Empatia</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" id="gpt-emp" style="width:0%"></div></div>
+          <span class="metric-val" id="gpt-emp-val">–</span>
+        </div>
+        <div class="metric">
+          <span class="metric-name">Velocidade</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" id="gpt-spd" style="width:0%"></div></div>
+          <span class="metric-val" id="gpt-spd-val">–</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-note">POC · Zaya IA · Agente de vendas para franquias · 2026</div>
+
+<script>
+// ─── PROMPT PRINCIPAL DA ZAYA ──────────────────────────────────────────────
+const ZAYA_PROMPT = `Você é a Zaya, consultora da equipe de expansão de uma rede de lavanderias expressas com mais de 300 unidades no Brasil.
+
+QUEM VOCÊ É:
+- Zaya, consultora humana da equipe de expansão
+- Calorosa, honesta, curiosa genuinamente sobre a história do lead
+- Nunca fria, nunca robótica, nunca apressada
+- Conversa como uma amiga que entende muito do assunto — não como uma vendedora
+
+ESTILO DE COMUNICAÇÃO:
+- Mensagens curtas (máximo 3 frases por resposta)
+- Uma pergunta por vez, nunca duas
+- Usa o nome da pessoa quando sabe
+- Valida SEMPRE o que a pessoa disse antes de avançar
+- Emojis com moderação — quando reforçam emoção genuína
+- Linguagem natural, como WhatsApp de verdade
+- NUNCA use: "Certamente!", "Claro!", "Estou aqui para ajudar!", "Ótima pergunta!"
+
+FLUXO DE QUALIFICAÇÃO (nessa ordem):
+1. Abertura calorosa com apresentação breve
+2. Entender a MOTIVAÇÃO (por que quer um negócio próprio agora?)
+3. Entender o CONTEXTO DE VIDA (empregado? empreendedor? quer complementar renda?)
+4. Entender o momento FINANCEIRO (capital disponível — sem citar números, deixa a pessoa falar primeiro)
+5. Entender QUEM DECIDE JUNTO (cônjuge, sócio, familiar?)
+6. Entender URGÊNCIA (prazo que pensa para começar)
+7. Quando qualificado: propor conexão natural com o especialista
+
+COMO LIDAR COM OBJEÇÕES:
+- "Não tenho muito dinheiro": Explore o que eles têm, mencione que existem formas de financiamento, não feche portas
+- "Preciso pensar": Valide o tempo de reflexão, pergunte o que mais precisa entender antes de decidir
+- "É muito caro": Redirecione — "o que 'caro' significa pra você? Deixa eu entender melhor o seu cenário"
+- "Tenho medo de fracassar": Valide o medo, fale em suporte da rede, não prometa nada
+- "Meu cônjuge não topou ainda": Inclua a conversa, pergunte o que ele/ela teria dúvida
+
+REGRAS ABSOLUTAS:
+- NUNCA cite valores específicos (nem R$75k, nem R$150k, nem qualquer número)
+- NUNCA prometa retorno, lucro ou prazo de retorno de investimento
+- NUNCA minta sobre ser humana — se perguntada diretamente, seja honesta
+- NUNCA pressione — se o lead disse não ou não está pronto, respeite
+- Quando o lead estiver quente: diga que vai conectar com o especialista e encerre com elegância
+
+CRITÉRIO DE LEAD QUENTE (acione o handoff):
+- Demonstrou interesse genuíno em abrir uma unidade
+- Tem capital disponível (qualquer valor — existem formatos diferentes)
+- Prazo de decisão em até 6 meses
+- Já respondeu sobre quem decide junto
+
+AO FAZER HANDOFF:
+Diga algo como: "Pelo que você me contou, acho que vale demais uma conversa com nosso especialista — ele consegue montar um cenário real, sem enrolação, exatamente pro seu perfil. Posso já conectar vocês?"`;
+
+// ─── PROMPT PARA GERAR RESUMO ──────────────────────────────────────────────
+const SUMMARY_PROMPT = `Com base na conversa abaixo entre a Zaya (consultora) e um lead, gere um resumo estruturado em JSON para o consultor humano. 
+
+Extraia exatamente estes campos (use null se não houver informação):
+{
+  "nome": "nome da pessoa se mencionado",
+  "motivacao": "por que quer um negócio próprio (resumo curto)",
+  "contexto_vida": "situação atual (emprego, etc)",
+  "capital": "o que disse sobre capital disponível",
+  "decisores": "quem decide junto",
+  "urgencia": "prazo para decidir",
+  "objecoes": "objeções ou medos levantados",
+  "temperatura": "QUENTE | MORNO | FRIO",
+  "proximo_passo": "recomendação para o consultor",
+  "tom_emocional": "como o lead pareceu emocionalmente"
+}
+
+Responda APENAS com o JSON válido, sem texto adicional.
+
+CONVERSA:
+`;
+
+// ─── ESTADO ────────────────────────────────────────────────────────────────
+let anthropicKey = '';
+let openaiKey = '';
+let demoMode = false;
+let gptIsReal = false;
+
+const histories = { claude: [], gpt: [] };
+const responseTimes = { claude: [], gpt: [] };
+const messageCount = { claude: 0, gpt: 0 };
+
+// Demo responses para GPT
+const GPT_DEMO = [
+  "Olá! Sou a Zaya, assistente virtual da equipe de expansão. Fico feliz em poder lhe atender! Como posso ajudá-lo hoje?",
+  "Entendido! Para que eu possa apresentar as melhores opções, poderia me informar qual é o seu objetivo principal com esta franquia?",
+  "Compreendo. Poderia me informar qual capital você teria disponível para este investimento? Isso nos ajuda a identificar o formato mais adequado.",
+  "Anotei! E você tomaria esta decisão sozinho ou há outras pessoas envolvidas neste processo, como cônjuge ou sócio?",
+  "Perfeito! Qual seria o prazo que você considera para iniciar esta jornada empreendedora?",
+  "Obrigada pelas informações! Com base no que me foi relatado, vou encaminhar seu perfil para um de nossos consultores especializados. Eles entrarão em contato em breve para dar continuidade ao atendimento.",
+];
+let gptDemoIdx = 0;
+
+// ─── SETUP ────────────────────────────────────────────────────────────────
+function startPOC() {
+  const ak = document.getElementById('anthropicKey').value.trim();
+  const ok = document.getElementById('openaiKey').value.trim();
+
+  if (!ak.startsWith('sk-ant')) {
+    alert('Chave Anthropic inválida. Deve começar com sk-ant-...');
+    return;
+  }
+
+  anthropicKey = ak;
+  openaiKey = ok;
+  demoMode = false;
+  gptIsReal = ok.startsWith('sk-');
+
+  document.getElementById('setupOverlay').style.display = 'none';
+
+  const modePill = document.getElementById('modePill');
+  modePill.className = 'mode-pill live';
+  modePill.textContent = gptIsReal ? '⚡ Modo live · ambas as APIs ativas' : '⚡ Modo live · Claude real · GPT simulado';
+
+  document.getElementById('pocModeLabel').textContent = gptIsReal ? 'POC ao vivo · ambas APIs' : 'POC · Claude ao vivo · GPT demo';
+
+  initChats();
+}
+
+function startDemo() {
+  demoMode = true;
+  document.getElementById('setupOverlay').style.display = 'none';
+
+  const modePill = document.getElementById('modePill');
+  modePill.className = 'mode-pill demo';
+  modePill.textContent = '◆ Modo demonstração · respostas simuladas';
+
+  initChats();
+}
+
+function initChats() {
+  const openClaude = "Oi! 😊 Sou a Zaya, da equipe de expansão. Vi que você tem interesse em abrir uma lavanderia — que ótimo! Posso te fazer algumas perguntinhas rápidas pra entender melhor o que faz sentido pra você?";
+  const openGPT = "Olá! Sou a Zaya, assistente virtual da equipe de expansão. Fico feliz em atendê-lo! Para que eu possa auxiliá-lo da melhor forma, poderia me informar o motivo do seu interesse em adquirir uma franquia de lavanderia?";
+
+  addMessage('claude', 'agent', openClaude);
+  histories.claude.push({ role: 'assistant', content: openClaude });
+
+  addMessage('gpt', 'agent', openGPT);
+  histories.gpt.push({ role: 'assistant', content: openGPT });
+
+  setTimeout(animateScores, 500);
+}
+
+// ─── MENSAGENS ─────────────────────────────────────────────────────────────
+function addMessage(panel, role, text) {
+  const container = document.getElementById(panel + 'Messages');
+  const row = document.createElement('div');
+  row.className = `msg-row ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = role === 'agent' ? (panel === 'claude' ? '✦' : '◆') : '👤';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = text;
+
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  container.appendChild(row);
+  container.scrollTop = container.scrollHeight;
+}
+
+function addTyping(panel) {
+  const container = document.getElementById(panel + 'Messages');
+  const row = document.createElement('div');
+  row.className = 'msg-row agent';
+  row.id = panel + '-typing';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = panel === 'claude' ? '✦' : '◆';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  container.appendChild(row);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTyping(panel) {
+  const el = document.getElementById(panel + '-typing');
+  if (el) el.remove();
+}
+
+// ─── ENVIAR ────────────────────────────────────────────────────────────────
+async function sendMessage(panel) {
+  const input = document.getElementById(panel + 'Input');
+  const btn = document.getElementById(panel + 'Send');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  btn.disabled = true;
+
+  addMessage(panel, 'user', text);
+  histories[panel].push({ role: 'user', content: text });
+  messageCount[panel]++;
+
+  addTyping(panel);
+  const t0 = Date.now();
+
+  try {
+    let reply;
+    if (panel === 'claude') {
+      reply = demoMode ? await demoClaudeReply(histories.claude) : await callClaude(histories.claude);
+    } else {
+      reply = (demoMode || !gptIsReal) ? await demoGPTReply() : await callGPT(histories.gpt);
+    }
+
+    const elapsed = Date.now() - t0;
+    responseTimes[panel].push(elapsed);
+
+    removeTyping(panel);
+    addMessage(panel, 'agent', reply);
+    histories[panel].push({ role: 'assistant', content: reply });
+
+    updateScores();
+
+    // Mostrar botão de resumo após 3 mensagens do usuário
+    if (messageCount[panel] >= 3) {
+      document.getElementById(panel + 'SummaryBtn').style.display = 'inline-block';
+    }
+
+    // Auto-detectar temperatura pelo conteúdo
+    detectTemperature(panel, text + ' ' + reply);
+
+  } catch (err) {
+    removeTyping(panel);
+    addMessage(panel, 'agent', '⚠️ Erro ao conectar. Verifique a chave da API e tente novamente.');
+    console.error(err);
+  }
+
+  btn.disabled = false;
+  input.focus();
+}
+
+// ─── APIS ──────────────────────────────────────────────────────────────────
+async function callClaude(history) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': anthropicKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 300,
+      system: ZAYA_PROMPT,
+      messages: history
+    })
+  });
+  if (!res.ok) throw new Error('Claude API: ' + res.status);
+  const data = await res.json();
+  return data.content[0].text;
+}
+
+async function callGPT(history) {
+  const messages = [
+    { role: 'system', content: ZAYA_PROMPT },
+    ...history
+  ];
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + openaiKey
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      max_tokens: 300,
+      messages
+    })
+  });
+  if (!res.ok) throw new Error('GPT API: ' + res.status);
+  const data = await res.json();
+  return data.choices[0].message.content;
+}
+
+// ─── DEMO RESPONSES ────────────────────────────────────────────────────────
+async function demoClaudeReply(history) {
+  await sleep(1000 + Math.random() * 700);
+  const userMsgs = history.filter(m => m.role === 'user');
+  const n = userMsgs.length;
+  const last = userMsgs[n-1]?.content?.toLowerCase() || '';
+
+  if (n === 1) {
+    if (last.includes('emprego') || last.includes('sair') || last.includes('próprio'))
+      return "Que motivação linda! Querer algo seu faz toda diferença na hora de tocar um negócio. 🌱 O que te fez pensar em lavanderia especificamente?";
+    if (last.includes('renda') || last.includes('extra') || last.includes('complementar'))
+      return "Faz muito sentido! Lavanderia express é um dos negócios que melhor combinam com quem quer uma renda complementar sem abrir mão da estabilidade que já tem. O que te atraiu nesse segmento?";
+    return "Que ótimo que você veio conversar! 😊 Me conta — o que te fez pensar em ter um negócio próprio agora? Teve algo que te inspirou?";
+  }
+  if (n === 2) return "Faz todo sentido. Lavanderia express cresce mesmo, independente de crise — roupa suja nunca falta. ✨ Você já tem alguma ideia de quanto teria disponível pra investir? Pergunto porque tenho formatos bem diferentes — quero entender o que realmente encaixa no seu momento.";
+  if (n === 3) {
+    if (last.includes('mil') || last.includes('dinheiro') || last.includes('poupan') || last.includes('financ'))
+      return "Bacana! Isso já abre possibilidades bem interessantes. 👍 E você pensaria nisso sozinho ou tem alguém — marido, esposa, sócio — que entra nessa decisão com você?";
+    return "Entendi! E pensando em prazo — você tá explorando por agora ou já tem uma ideia de quando quer começar a movimentar isso?";
+  }
+  if (n === 4) return "Anotei tudo isso! Pelo que você me contou, acho que vale muito uma conversa rápida com nosso especialista — ele vai te mostrar um cenário real, sem enrolação, pro seu perfil específico. Posso já conectar vocês? 🚀";
+  return "Ótimo! Vou passar seu contato pro nosso especialista com um resumo de tudo que conversamos. Ele vai chegar já sabendo seu perfil — não precisa contar tudo de novo. 😊";
+}
+
+async function demoGPTReply() {
+  await sleep(600 + Math.random() * 400);
+  const r = GPT_DEMO[gptDemoIdx % GPT_DEMO.length];
+  gptDemoIdx++;
+  return r;
+}
+
+// ─── GERAR RESUMO PARA CONSULTOR ──────────────────────────────────────────
+async function generateSummary(panel) {
+  const btn = document.getElementById(panel + 'SummaryBtn');
+  btn.textContent = '⏳ Gerando...';
+  btn.disabled = true;
+
+  const conversation = histories[panel]
+    .map(m => `${m.role === 'assistant' ? 'Zaya' : 'Lead'}: ${m.content}`)
+    .join('\n');
+
+  try {
+    let jsonStr;
+
+    if (!demoMode && anthropicKey) {
+      // Usa Claude para gerar o resumo sempre
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': anthropicKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 600,
+          messages: [{
+            role: 'user',
+            content: SUMMARY_PROMPT + conversation
+          }]
+        })
+      });
+      const data = await res.json();
+      jsonStr = data.content[0].text;
+    } else {
+      // Demo: resumo simulado
+      jsonStr = JSON.stringify({
+        nome: "Lead demo",
+        motivacao: "Quer complementar a renda e ter independência financeira",
+        contexto_vida: "Empregado, quer uma renda extra sem sair do emprego",
+        capital: "Tem algum capital poupado, aberto a financiamento",
+        decisores: "Precisa conversar com o cônjuge",
+        urgencia: "Pensa em começar nos próximos 3-4 meses",
+        objecoes: "Medo do risco, incerteza sobre o retorno",
+        temperatura: "MORNO",
+        proximo_passo: "Agendar ligação incluindo cônjuge para esclarecer dúvidas sobre suporte da rede",
+        tom_emocional: "Animado mas cauteloso — precisa de segurança antes de decidir"
+      });
+    }
+
+    const clean = jsonStr.replace(/```json|```/g, '').trim();
+    const data = JSON.parse(clean);
+    renderSummary(panel, data);
+
+  } catch (err) {
+    document.getElementById(panel + 'SummaryContent').innerHTML = '<div class="summary-empty" style="color:#f87171">Erro ao gerar resumo. Tente novamente.</div>';
+    console.error(err);
+  }
+
+  btn.textContent = '↺ Atualizar resumo';
+  btn.disabled = false;
+}
+
+function renderSummary(panel, data) {
+  const container = document.getElementById(panel + 'SummaryContent');
+  const tempBadge = document.getElementById(panel + 'Temp');
+
+  const tempMap = { QUENTE: 'hot', MORNO: 'warm', FRIO: 'cold' };
+  const tempClass = tempMap[data.temperatura] || 'pending';
+  tempBadge.className = 'summary-badge ' + tempClass;
+  tempBadge.textContent = (data.temperatura || '?') + (data.temperatura === 'QUENTE' ? ' 🔥' : data.temperatura === 'MORNO' ? ' 🌡' : ' ❄️');
+
+  const fields = [
+    ['Nome', data.nome],
+    ['Motivação', data.motivacao],
+    ['Contexto', data.contexto_vida],
+    ['Capital', data.capital],
+    ['Decisores', data.decisores],
+    ['Urgência', data.urgencia],
+    ['Objeções', data.objecoes],
+    ['Tom emocional', data.tom_emocional],
+    ['Próximo passo', data.proximo_passo],
+  ];
+
+  container.innerHTML = '<div class="summary-fields">' +
+    fields.filter(([, v]) => v && v !== 'null').map(([k, v]) =>
+      `<div class="summary-row"><span class="summary-key">${k}</span><span class="summary-val">${v}</span></div>`
+    ).join('') +
+    '</div>';
+}
+
+// ─── TEMPERATURA AUTO-DETECT ──────────────────────────────────────────────
+function detectTemperature(panel, text) {
+  const t = text.toLowerCase();
+  const badge = document.getElementById(panel + 'Temp');
+  if (t.includes('quero') && t.includes('especialista') || t.includes('conectar') || t.includes('reunião')) {
+    badge.className = 'summary-badge hot';
+    badge.textContent = 'QUENTE 🔥';
+  } else if (messageCount[panel] >= 3) {
+    badge.className = 'summary-badge warm';
+    badge.textContent = 'MORNO 🌡';
+  }
+}
+
+// ─── SCORES ────────────────────────────────────────────────────────────────
+function animateScores() {
+  setScore('claude', 'nat', 95);
+  setScore('claude', 'ctx', 92);
+  setScore('claude', 'emp', 97);
+  setScore('gpt', 'nat', 80);
+  setScore('gpt', 'ctx', 88);
+  setScore('gpt', 'emp', 75);
+}
+
+function updateScores() {
+  // Velocidade baseada em tempo real
+  const avgClaude = responseTimes.claude.length
+    ? responseTimes.claude.reduce((a,b) => a+b, 0) / responseTimes.claude.length
+    : null;
+  const avgGPT = responseTimes.gpt.length
+    ? responseTimes.gpt.reduce((a,b) => a+b, 0) / responseTimes.gpt.length
+    : null;
+
+  if (avgClaude && avgGPT) {
+    const maxT = Math.max(avgClaude, avgGPT);
+    const claudeSpd = Math.round(100 - (avgClaude / maxT) * 20);
+    const gptSpd = Math.round(100 - (avgGPT / maxT) * 20);
+    setScore('claude', 'spd', claudeSpd);
+    setScore('gpt', 'spd', gptSpd);
+  } else if (avgClaude) {
+    setScore('claude', 'spd', 82);
+  } else if (avgGPT) {
+    setScore('gpt', 'spd', 95);
+  }
+
+  animateScores();
+}
+
+function setScore(panel, key, val) {
+  const bar = document.getElementById(`${panel}-${key}`);
+  const label = document.getElementById(`${panel}-${key}-val`);
+  if (bar) bar.style.width = val + '%';
+  if (label) label.textContent = val + '%';
+}
+
+// ─── UTILS ─────────────────────────────────────────────────────────────────
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function handleKey(e, panel) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage(panel);
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 90) + 'px';
+}
+
+function resetChat(panel) {
+  histories[panel] = [];
+  responseTimes[panel] = [];
+  messageCount[panel] = 0;
+  gptDemoIdx = 0;
+  document.getElementById(panel + 'Messages').innerHTML = '';
+  document.getElementById(panel + 'SummaryContent').innerHTML = '<div class="summary-empty">O resumo aparece conforme a conversa avança...</div>';
+  document.getElementById(panel + 'SummaryBtn').style.display = 'none';
+  document.getElementById(panel + 'Temp').className = 'summary-badge pending';
+  document.getElementById(panel + 'Temp').textContent = 'aguardando';
+
+  const opening = panel === 'claude'
+    ? "Oi! 😊 Sou a Zaya, da equipe de expansão. Vi que você tem interesse em abrir uma lavanderia — que ótimo! Posso te fazer algumas perguntinhas rápidas pra entender melhor o que faz sentido pra você?"
+    : "Olá! Sou a Zaya, assistente da equipe de expansão. Fico feliz em atendê-lo! Para que eu possa auxiliá-lo da melhor forma, poderia me informar o motivo do seu interesse?";
+
+  addMessage(panel, 'agent', opening);
+  histories[panel].push({ role: 'assistant', content: opening });
+}
+</script>
+</body>
+</html>
