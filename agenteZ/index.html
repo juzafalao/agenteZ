@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zaya IA — Apresentação</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Lia IA — Consultora Inteligente de Franquias</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f7f4ef;
@@ -16,6 +16,7 @@
     --surface: #eeeae2;
     --white: #fdfcf9;
     --red: #8b2e2e;
+    --dark: #0f1a0f;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,13 +24,82 @@
   body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
     font-size: 16px;
     line-height: 1.6;
     overflow-x: hidden;
   }
 
-  /* NAV DOTS */
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--accent2);
+    z-index: 300;
+    transition: width 0.3s;
+  }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(247,244,239,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+
+  .topnav.scrolled { border-color: var(--surface); }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--ink2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--accent) !important;
+    color: white !important;
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-size: 0.82rem !important;
+  }
+
+  @media (max-width: 700px) {
+    .topnav { padding: 16px 24px; }
+    .nav-links { display: none; }
+  }
+
+  /* ── NAV DOTS ── */
   .nav-dots {
     position: fixed;
     right: 28px;
@@ -42,313 +112,405 @@
   }
 
   .nav-dot {
-    width: 8px; height: 8px;
+    width: 7px; height: 7px;
     border-radius: 50%;
     background: var(--muted);
     cursor: pointer;
     transition: all 0.3s;
     border: none;
+    opacity: 0.5;
   }
 
-  .nav-dot.active { background: var(--accent); transform: scale(1.4); }
-  .nav-dot:hover { background: var(--ink2); }
+  .nav-dot.active { background: var(--accent); transform: scale(1.5); opacity: 1; }
+  .nav-dot:hover { opacity: 1; }
 
-  /* SLIDES */
+  @media (max-width: 700px) { .nav-dots { display: none; } }
+
+  /* ── SLIDES ── */
   .slide {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 80px 60px;
-    max-width: 960px;
+    padding: 120px 80px 80px;
+    max-width: 1000px;
     margin: 0 auto;
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
     position: relative;
   }
 
-  .slide.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .slide.visible { opacity: 1; transform: translateY(0); }
+  .slide + .slide { border-top: 1px solid var(--surface); }
 
-  /* slide separator */
-  .slide + .slide {
-    border-top: 1px solid var(--surface);
-  }
+  @media (max-width: 700px) { .slide { padding: 100px 28px 60px; } }
 
-  @media (max-width: 700px) {
-    .slide { padding: 60px 28px; }
-    .nav-dots { right: 14px; }
-  }
-
-  /* ── SLIDE 1 — CAPA ── */
-  .slide-capa {
+  /* ── HERO ── */
+  .slide-hero {
     min-height: 100vh;
-    background: var(--ink);
+    background: var(--dark);
     color: var(--white);
     padding: 0;
     max-width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 55% 45%;
     opacity: 1;
     transform: none;
   }
 
-  @media (max-width: 700px) {
-    .slide-capa { grid-template-columns: 1fr; }
-    .capa-right { display: none; }
+  @media (max-width: 800px) {
+    .slide-hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
   }
 
-  .capa-left {
-    padding: 80px 60px;
+  .hero-left {
+    padding: 120px 80px;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
 
-  @media (max-width: 700px) {
-    .capa-left { padding: 60px 28px; }
+  @media (max-width: 700px) { .hero-left { padding: 100px 28px 60px; } }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
   }
 
-  .capa-tag {
-    font-size: 0.72rem;
+  .hero-tag {
+    font-size: 0.67rem;
     font-weight: 500;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--accent2);
-    margin-bottom: 28px;
   }
 
-  .capa-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(3rem, 6vw, 5rem);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    margin-bottom: 8px;
+  .hero-sep { width: 32px; height: 1px; background: rgba(200,169,110,0.4); }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.2rem, 6.5vw, 5.5rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin-bottom: 6px;
   }
 
-  .capa-title em {
+  .hero-title em {
     font-style: italic;
     color: var(--accent2);
-  }
-
-  .capa-sub {
-    font-size: 1.1rem;
-    color: rgba(255,255,255,0.5);
-    margin-top: 20px;
+    font-family: 'Instrument Sans', sans-serif;
     font-weight: 300;
-    max-width: 360px;
-    line-height: 1.7;
   }
 
-  .capa-by {
-    margin-top: 60px;
-    font-size: 0.8rem;
+  .hero-sub {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: 28px;
+    font-weight: 300;
+    font-style: italic;
+    max-width: 400px;
+    line-height: 1.75;
+  }
+
+  .hero-phrase {
+    margin-top: 36px;
+    border-left: 3px solid var(--accent2);
+    padding-left: 18px;
+  }
+
+  .hero-phrase p {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent2);
+    line-height: 1.4;
+  }
+
+  .hero-phrase small {
+    display: block;
+    font-size: 0.72rem;
     color: rgba(255,255,255,0.3);
+    margin-top: 6px;
     letter-spacing: 0.05em;
   }
 
-  .capa-right {
-    background: var(--accent);
+  .hero-actions {
+    margin-top: 52px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent2);
+    color: var(--dark);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.25s;
+  }
+
+  .btn-primary:hover { background: white; transform: translateY(-2px); }
+
+  .btn-ghost {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+
+  .btn-ghost:hover { color: white; }
+
+  .hero-by {
+    margin-top: 64px;
+    font-size: 0.73rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.06em;
+  }
+
+  .hero-right {
+    position: relative;
+    background: linear-gradient(135deg, #1a3320 0%, #0f1a0f 100%);
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    overflow: hidden;
   }
 
-  .capa-right::before {
+  .hero-right::before {
     content: '';
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 60% 40%, rgba(200,169,110,0.15) 0%, transparent 70%),
-      repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px);
+      radial-gradient(ellipse 80% 60% at 50% 30%, rgba(200,169,110,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 40% at 70% 70%, rgba(42,92,63,0.3) 0%, transparent 60%);
   }
 
-  .capa-icon {
-    font-family: 'Playfair Display', serif;
-    font-size: 10rem;
-    font-style: italic;
-    color: rgba(255,255,255,0.08);
+  .hero-letter {
+    font-family: 'Syne', sans-serif;
+    font-size: 18rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.04);
     position: relative;
     z-index: 1;
     line-height: 1;
+    letter-spacing: -0.06em;
+    user-select: none;
   }
 
-  .capa-stat {
+  .hero-stat-float {
     position: absolute;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
     z-index: 2;
+    text-align: center;
   }
 
-  .capa-stat-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.8rem;
-    font-weight: 700;
+  .hero-stat-float.f1 { bottom: 15%; left: 50%; transform: translateX(-50%); }
+  .hero-stat-float.f2 { top: 20%; right: 15%; }
+
+  .hsf-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 800;
     color: var(--accent2);
     line-height: 1;
+    letter-spacing: -0.04em;
   }
 
-  .capa-stat-label {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 0.1em;
+  .hsf-lbl {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-top: 6px;
+    margin-top: 4px;
   }
 
-  /* ── LABELS / TAGS ── */
-  .slide-num {
-    font-size: 0.7rem;
+  /* ── SEÇÃO LABELS ── */
+  .section-num {
+    font-size: 0.67rem;
     font-weight: 500;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
 
-  .slide-num::after {
+  .section-num::after {
     content: '';
     flex: 1;
     height: 1px;
     background: var(--surface);
-    max-width: 40px;
+    max-width: 36px;
   }
 
   /* ── TÍTULOS ── */
   .slide-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Syne', sans-serif;
     font-weight: 700;
     font-size: clamp(2rem, 4vw, 3rem);
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    margin-bottom: 12px;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin-bottom: 14px;
   }
 
   .slide-title em {
     font-style: italic;
     color: var(--accent);
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 300;
   }
 
   .slide-lead {
     font-size: 1.05rem;
     color: var(--ink2);
-    max-width: 560px;
-    line-height: 1.75;
-    margin-bottom: 40px;
+    max-width: 580px;
+    line-height: 1.8;
+    margin-bottom: 44px;
     font-weight: 300;
+    font-style: italic;
+  }
+
+  /* ── PULL QUOTE ── */
+  .pull-quote {
+    border-left: 3px solid var(--accent2);
+    padding: 16px 22px;
+    margin: 32px 0;
+    background: var(--white);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .pull-quote p {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink2);
+    line-height: 1.65;
+  }
+
+  .pull-quote cite {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 0.04em;
+    font-style: normal;
+  }
+
+  /* ── NEGÓCIO SEM FUNCIONÁRIO — DESTAQUE ── */
+  .destaque-phrase {
+    background: var(--accent);
+    border-radius: 20px;
+    padding: 36px 40px;
+    margin: 36px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .destaque-phrase::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,110,0.18) 0%, transparent 70%);
+  }
+
+  .destaque-phrase h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: var(--accent2);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    position: relative;
+    z-index: 1;
+  }
+
+  .destaque-phrase p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.65);
+    margin-top: 12px;
+    max-width: 480px;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
   }
 
   /* ── CARDS ── */
-  .cards {
-    display: grid;
-    gap: 16px;
-  }
-
+  .cards { display: grid; gap: 14px; }
   .cards-3 { grid-template-columns: repeat(3, 1fr); }
   .cards-2 { grid-template-columns: repeat(2, 1fr); }
 
-  @media (max-width: 700px) {
-    .cards-3, .cards-2 { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 700px) { .cards-3, .cards-2 { grid-template-columns: 1fr; } }
 
   .card {
     background: var(--white);
     border: 1px solid var(--surface);
     border-radius: 16px;
-    padding: 28px 24px;
+    padding: 26px 22px;
+    transition: box-shadow 0.2s, transform 0.2s;
   }
 
-  .card-icon {
-    font-size: 1.6rem;
-    margin-bottom: 14px;
-    display: block;
-  }
+  .card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
 
-  .card-title {
-    font-weight: 500;
-    font-size: 1rem;
-    margin-bottom: 8px;
-    color: var(--ink);
-  }
+  .card-icon { font-size: 1.5rem; margin-bottom: 14px; display: block; }
+  .card-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; color: var(--ink); }
+  .card-body { font-size: 0.84rem; color: var(--ink2); line-height: 1.75; }
 
-  .card-body {
-    font-size: 0.88rem;
-    color: var(--ink2);
-    line-height: 1.7;
-  }
-
-  .card.accent-card {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-
+  .card.accent-card { background: var(--accent); border-color: var(--accent); color: white; }
   .card.accent-card .card-title { color: var(--accent2); }
-  .card.accent-card .card-body { color: rgba(255,255,255,0.75); }
+  .card.accent-card .card-body { color: rgba(255,255,255,0.72); }
 
-  /* ── PROBLEMA — LINHA DO TEMPO ── */
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin-top: 8px;
-  }
+  /* ── TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
 
   .tl-item {
     display: flex;
     gap: 20px;
     align-items: flex-start;
-    padding: 16px 0;
+    padding: 18px 0;
     border-bottom: 1px solid var(--surface);
   }
 
   .tl-item:last-child { border-bottom: none; }
 
   .tl-time {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
     font-weight: 700;
     color: var(--muted);
-    min-width: 70px;
+    min-width: 72px;
     line-height: 1.2;
     flex-shrink: 0;
   }
 
-  .tl-content {}
-
-  .tl-label {
-    font-weight: 500;
-    font-size: 0.92rem;
-    margin-bottom: 4px;
-  }
-
-  .tl-desc {
-    font-size: 0.84rem;
-    color: var(--ink2);
-  }
+  .tl-label { font-weight: 500; font-size: 0.92rem; margin-bottom: 4px; }
+  .tl-desc { font-size: 0.82rem; color: var(--ink2); line-height: 1.6; }
 
   .tl-item.bad .tl-time { color: var(--red); }
   .tl-item.good .tl-time { color: var(--accent); }
 
   /* ── COMPARATIVO ── */
-  .compare {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-top: 8px;
-  }
-
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 700px) { .compare { grid-template-columns: 1fr; } }
 
   .compare-col {
@@ -359,196 +521,96 @@
   }
 
   .compare-header {
-    padding: 16px 20px;
-    font-size: 0.72rem;
-    font-weight: 500;
+    padding: 14px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
   }
 
   .compare-col.before .compare-header { background: #f5eaea; color: var(--red); }
   .compare-col.after .compare-header { background: #eaf3ec; color: var(--accent); }
 
-  .compare-items {
-    padding: 8px 20px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .compare-item {
-    font-size: 0.88rem;
-    color: var(--ink2);
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    line-height: 1.5;
-  }
-
+  .compare-items { padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .compare-item { font-size: 0.86rem; color: var(--ink2); display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; }
   .compare-item .icon { flex-shrink: 0; font-size: 1rem; margin-top: 1px; }
 
-  /* ── ARQUITETURA ── */
-  .arch {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 8px;
-  }
-
-  .arch-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .arch-block {
-    flex: 1;
-    background: var(--white);
-    border: 1px solid var(--surface);
-    border-radius: 12px;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .arch-block.highlight {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-
-  .arch-block.highlight .arch-name { color: var(--accent2); }
-  .arch-block.highlight .arch-desc { color: rgba(255,255,255,0.6); }
-
-  .arch-emoji { font-size: 1.4rem; flex-shrink: 0; }
-
-  .arch-name {
-    font-weight: 500;
-    font-size: 0.92rem;
-    color: var(--ink);
-  }
-
-  .arch-desc {
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .arch-arrow {
-    font-size: 1.2rem;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
-
   /* ── ROTEIRO ── */
-  .roteiro {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 8px;
-  }
+  .roteiro { display: flex; flex-direction: column; gap: 10px; }
 
   .rot-item {
     background: var(--white);
     border: 1px solid var(--surface);
     border-radius: 14px;
-    padding: 18px 20px;
+    padding: 16px 18px;
     display: flex;
     gap: 16px;
     align-items: flex-start;
+    transition: border-color 0.2s;
   }
 
+  .rot-item:hover { border-color: rgba(42,92,63,0.3); }
+
   .rot-num {
-    width: 30px; height: 30px;
+    width: 28px; height: 28px;
     border-radius: 50%;
     background: var(--surface);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Playfair Display', serif;
+    font-family: 'Syne', sans-serif;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     color: var(--muted);
     flex-shrink: 0;
   }
 
-  .rot-item.active .rot-num {
-    background: var(--accent);
-    color: white;
-  }
+  .rot-item.active .rot-num { background: var(--accent); color: white; }
 
-  .rot-title {
-    font-weight: 500;
-    font-size: 0.92rem;
-    margin-bottom: 4px;
-  }
+  .rot-title { font-weight: 500; font-size: 0.9rem; margin-bottom: 6px; }
 
   .rot-msg {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--ink2);
     font-style: italic;
     background: var(--surface);
     padding: 8px 12px;
     border-radius: 8px;
     border-left: 3px solid var(--accent);
-    margin-top: 6px;
-    line-height: 1.6;
+    line-height: 1.65;
   }
 
-  /* ── FASES ── */
-  .fases {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 8px;
-  }
+  /* ── ARQUITETURA ── */
+  .arch { display: flex; flex-direction: column; gap: 10px; }
 
-  @media (max-width: 700px) { .fases { grid-template-columns: 1fr; } }
+  .arch-row { display: flex; align-items: center; gap: 12px; }
 
-  .fase {
-    border-radius: 16px;
-    padding: 24px 20px;
+  .arch-block {
+    flex: 1;
+    background: var(--white);
     border: 1px solid var(--surface);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  .fase-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 12px;
-  }
+  .arch-block.highlight { background: var(--accent); border-color: var(--accent); color: white; }
+  .arch-block.highlight .arch-name { color: var(--accent2); }
+  .arch-block.highlight .arch-desc { color: rgba(255,255,255,0.55); }
 
-  .fase-title {
-    font-weight: 500;
-    font-size: 0.92rem;
-    margin-bottom: 8px;
-  }
+  .arch-emoji { font-size: 1.3rem; flex-shrink: 0; }
+  .arch-name { font-weight: 500; font-size: 0.9rem; color: var(--ink); }
+  .arch-desc { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+  .arch-arrow { font-size: 1.1rem; color: var(--muted); flex-shrink: 0; }
 
-  .fase-items {
-    font-size: 0.8rem;
-    color: var(--ink2);
-    line-height: 1.8;
-  }
-
-  .fase:nth-child(1) { background: var(--white); }
-  .fase:nth-child(1) .fase-num { color: var(--muted); }
-
-  .fase:nth-child(2) { background: #f0f7f3; border-color: #c5dece; }
-  .fase:nth-child(2) .fase-num { color: var(--accent); }
-
-  .fase:nth-child(3) { background: var(--accent); border-color: var(--accent); color: white; }
-  .fase:nth-child(3) .fase-num { color: var(--accent2); }
-  .fase:nth-child(3) .fase-title { color: var(--accent2); }
-  .fase:nth-child(3) .fase-items { color: rgba(255,255,255,0.7); }
-
-  /* ── ROI ── */
+  /* ── ROI GRID ── */
   .roi-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-top: 8px;
+    gap: 14px;
   }
 
   @media (max-width: 700px) { .roi-grid { grid-template-columns: 1fr 1fr; } }
@@ -557,32 +619,31 @@
     background: var(--white);
     border: 1px solid var(--surface);
     border-radius: 16px;
-    padding: 24px 20px;
+    padding: 22px 18px;
     text-align: center;
+    transition: box-shadow 0.2s;
   }
 
+  .roi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+
   .roi-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.4rem;
-    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
     color: var(--accent);
     line-height: 1;
     margin-bottom: 6px;
+    letter-spacing: -0.03em;
   }
 
-  .roi-label {
-    font-size: 0.78rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
+  .roi-label { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
 
-  /* ── RESUMO CONSULTOR ── */
+  /* ── RESUMO CARD ── */
   .resumo-card {
     background: var(--ink);
     color: white;
     border-radius: 20px;
-    padding: 32px;
-    margin-top: 8px;
+    padding: 30px;
     position: relative;
     overflow: hidden;
   }
@@ -593,82 +654,236 @@
     top: -40px; right: -40px;
     width: 200px; height: 200px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(200,169,110,0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(200,169,110,0.1) 0%, transparent 70%);
   }
 
   .resumo-tag {
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.15em;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--accent2);
     margin-bottom: 20px;
+    font-family: 'Syne', sans-serif;
   }
 
-  .resumo-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-
+  .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 700px) { .resumo-grid { grid-template-columns: 1fr; } }
 
-  .resumo-row {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .resumo-key {
-    font-size: 0.68rem;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .resumo-val {
-    font-size: 0.88rem;
-    color: rgba(255,255,255,0.85);
-    line-height: 1.5;
-  }
+  .resumo-row { display: flex; flex-direction: column; gap: 3px; }
+  .resumo-key { font-size: 0.65rem; color: rgba(255,255,255,0.3); letter-spacing: 0.08em; text-transform: uppercase; }
+  .resumo-val { font-size: 0.86rem; color: rgba(255,255,255,0.82); line-height: 1.5; }
 
   .temp-badge {
     display: inline-block;
     background: #8b2e2e;
     color: #f4a0a0;
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 4px 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 14px;
     border-radius: 100px;
-    margin-top: 16px;
+    margin-top: 18px;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.04em;
   }
+
+  /* ── FASES ── */
+  .fases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .fases { grid-template-columns: 1fr; } }
+
+  .fase {
+    border-radius: 16px;
+    padding: 22px 18px;
+    border: 1px solid var(--surface);
+  }
+
+  .fase-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 12px;
+    letter-spacing: -0.04em;
+  }
+
+  .fase-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; font-family: 'Syne', sans-serif; }
+  .fase-items { font-size: 0.78rem; color: var(--ink2); line-height: 1.9; }
+
+  .fase:nth-child(1) { background: var(--white); }
+  .fase:nth-child(1) .fase-num { color: var(--muted); }
+
+  .fase:nth-child(2) { background: #f0f7f3; border-color: #c5dece; }
+  .fase:nth-child(2) .fase-num { color: var(--accent); }
+
+  .fase:nth-child(3) { background: var(--accent); border-color: var(--accent); color: white; }
+  .fase:nth-child(3) .fase-num { color: var(--accent2); }
+  .fase:nth-child(3) .fase-title { color: var(--accent2); }
+  .fase:nth-child(3) .fase-items { color: rgba(255,255,255,0.68); }
 
   /* ── SLIDE FINAL ── */
   .slide-final {
     background: var(--accent);
     color: white;
     max-width: 100%;
-    padding: 80px 60px;
+    padding: 120px 80px 80px;
   }
 
-  @media (max-width: 700px) { .slide-final { padding: 60px 28px; } }
+  @media (max-width: 700px) { .slide-final { padding: 100px 28px 60px; } }
 
   .slide-final .slide-title { color: white; }
-  .slide-final .slide-title em { color: var(--accent2); }
-  .slide-final .slide-lead { color: rgba(255,255,255,0.65); }
+  .slide-final .slide-title em { color: var(--accent2); font-style: italic; }
+  .slide-final .slide-lead { color: rgba(255,255,255,0.55); }
 
-  .next-steps {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 8px;
-  }
-
+  .next-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 700px) { .next-steps { grid-template-columns: 1fr; } }
 
   .next-item {
     background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    transition: background 0.2s;
+  }
+
+  .next-item:hover { background: rgba(255,255,255,0.12); }
+
+  .next-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .next-title { font-weight: 600; font-size: 0.9rem; color: var(--accent2); margin-bottom: 4px; font-family: 'Syne', sans-serif; }
+  .next-desc { font-size: 0.8rem; color: rgba(255,255,255,0.56); line-height: 1.65; }
+
+  /* ── INVESTIMENTO DETALHADO ── */
+  .invest-table {
+    background: var(--white);
+    border: 1px solid var(--surface);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .invest-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--surface);
+    align-items: center;
+    font-size: 0.88rem;
+  }
+
+  .invest-row:last-child { border-bottom: none; }
+
+  .invest-row.header {
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface);
+    font-family: 'Syne', sans-serif;
+  }
+
+  .invest-row.total {
+    background: #f0f7f3;
+    font-weight: 600;
+    border-top: 2px solid rgba(42,92,63,0.2);
+  }
+
+  .invest-item { color: var(--ink); }
+  .invest-range { color: var(--ink2); font-size: 0.84rem; }
+  .invest-note { font-size: 0.74rem; color: var(--muted); font-style: italic; }
+
+  .badge-financiavel {
+    display: inline-block;
+    background: #eaf3ec;
+    color: var(--accent);
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── CICLO TEMPO ── */
+  .ciclo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 700px) { .ciclo-grid { grid-template-columns: 1fr 1fr; } }
+
+  .ciclo-item {
+    background: var(--white);
+    border: 1px solid var(--surface);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+  }
+
+  .ciclo-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.03em;
+  }
+
+  .ciclo-label { font-size: 0.73rem; color: var(--muted); line-height: 1.5; }
+
+  .ciclo-item.normal .ciclo-num { color: var(--ink2); }
+  .ciclo-item.fast .ciclo-num { color: var(--accent); }
+  .ciclo-item.lia .ciclo-num { color: var(--accent2); }
+  .ciclo-item.lia { background: var(--ink); border-color: var(--ink); }
+  .ciclo-item.lia .ciclo-label { color: rgba(255,255,255,0.4); }
+
+  /* ── IA ATUAL vs LIA ── */
+  .ia-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 700px) { .ia-compare { grid-template-columns: 1fr; } }
+
+  .ia-col {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--surface);
+  }
+
+  .ia-header {
+    padding: 14px 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .ia-col.atual .ia-header { background: #f5eaea; color: var(--red); }
+  .ia-col.lia .ia-header { background: #eaf3ec; color: var(--accent); }
+
+  .ia-items { background: var(--white); padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .ia-item { font-size: 0.85rem; color: var(--ink2); display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; }
+  .ia-item .icon { flex-shrink: 0; font-size: 1rem; margin-top: 1px; }
+
+  /* ── PERFIS ── */
+  .perfis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 700px) { .perfis { grid-template-columns: 1fr; } }
+
+  .perfil {
+    background: var(--white);
+    border: 1px solid var(--surface);
     border-radius: 14px;
     padding: 20px;
     display: flex;
@@ -676,80 +891,102 @@
     align-items: flex-start;
   }
 
-  .next-icon { font-size: 1.3rem; flex-shrink: 0; }
-  .next-title { font-weight: 500; font-size: 0.92rem; color: var(--accent2); margin-bottom: 4px; }
-  .next-desc { font-size: 0.82rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
-
-  /* ── SCROLL PROGRESS ── */
-  .progress-bar {
-    position: fixed;
-    top: 0; left: 0;
-    height: 3px;
-    background: var(--accent2);
-    z-index: 200;
-    transition: width 0.3s;
+  .perfil-badge {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
   }
 
-  /* ── QUOTE PULL ── */
-  .pull-quote {
-    border-left: 4px solid var(--accent2);
-    padding: 16px 24px;
-    margin: 32px 0;
-    background: var(--white);
-    border-radius: 0 12px 12px 0;
-  }
+  .perfil-badge.quente { background: #eaf3ec; }
+  .perfil-badge.morno { background: #fef7e8; }
+  .perfil-badge.frio { background: #f5eaea; }
 
-  .pull-quote p {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
-    font-style: italic;
-    color: var(--ink2);
-    line-height: 1.7;
-  }
+  .perfil-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+  .perfil-sub { font-size: 0.78rem; color: var(--muted); }
 
-  .pull-quote cite {
-    display: block;
-    font-size: 0.78rem;
-    color: var(--muted);
+  .perfil-tag {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border-radius: 100px;
     margin-top: 8px;
-    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
   }
+
+  .perfil-tag.quente { background: #eaf3ec; color: var(--accent); }
+  .perfil-tag.morno { background: #fef7e8; color: #b8820a; }
+  .perfil-tag.frio { background: #f5eaea; color: var(--red); }
+
 </style>
 </head>
 <body>
 
 <div class="progress-bar" id="progressBar"></div>
 
+<nav class="topnav" id="topNav">
+  <a class="nav-logo" href="/">Lia <span>IA</span></a>
+  <ul class="nav-links">
+    <li><a href="#problema">O Problema</a></li>
+    <li><a href="#solucao">A Solução</a></li>
+    <li><a href="#investimento">Investimento</a></li>
+    <li><a href="#roi">Impacto</a></li>
+    <li><a href="/demo" class="nav-cta">▶ Ver Demo ao Vivo</a></li>
+  </ul>
+</nav>
+
 <nav class="nav-dots" id="navDots"></nav>
 
-<!-- ══════════════════════════════════════════
-     SLIDE 1 — CAPA
-══════════════════════════════════════════ -->
-<section class="slide slide-capa" data-slide="0">
-  <div class="capa-left">
-    <div class="capa-tag">Proposta estratégica · 2026</div>
-    <h1 class="capa-title">
-      Zaya <em>IA</em>
+<!-- ══════════ SLIDE 1 — HERO ══════════ -->
+<section class="slide slide-hero" data-slide="0" id="inicio">
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <span class="hero-tag">Proposta estratégica · 2026</span>
+      <div class="hero-sep"></div>
+    </div>
+    <h1 class="hero-title">
+      Lia<br>
+      <em>IA</em>
     </h1>
-    <p class="capa-sub">Um agente inteligente que capta, qualifica e aquece leads de franquia — 24 horas por dia, no WhatsApp, antes que eles esfriem.</p>
-    <div class="capa-by">Preparado por: Analista de Integração & IA</div>
+
+    <div class="hero-phrase">
+      <p>Um negócio que não<br>precisa de funcionário.</p>
+      <small>A premissa que muda tudo para o lead certo</small>
+    </div>
+
+    <p class="hero-sub">Uma consultora inteligente que capta, qualifica e aquece leads de franquia — 24 horas por dia, no WhatsApp, antes que eles esfriem.</p>
+
+    <div class="hero-actions">
+      <a href="/demo" class="btn-primary">▶ Ver Demo ao Vivo</a>
+      <a href="#problema" class="btn-ghost">Entender o problema →</a>
+    </div>
+
+    <div class="hero-by">Desenvolvido por Zafalao Tech · 2026</div>
   </div>
-  <div class="capa-right">
-    <div class="capa-icon">Z</div>
-    <div class="capa-stat">
-      <div class="capa-stat-num">5 min</div>
-      <div class="capa-stat-label">a janela de ouro de um lead quente</div>
+  <div class="hero-right">
+    <div class="hero-letter">L</div>
+    <div class="hero-stat-float f1">
+      <div class="hsf-num">5 min</div>
+      <div class="hsf-lbl">janela de ouro do lead</div>
+    </div>
+    <div class="hero-stat-float f2">
+      <div class="hsf-num">24/7</div>
+      <div class="hsf-lbl">disponibilidade total</div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SLIDE 2 — O PROBLEMA REAL
-══════════════════════════════════════════ -->
-<section class="slide" data-slide="1">
-  <div class="slide-num">01 · O problema</div>
+<!-- ══════════ SLIDE 2 — O PROBLEMA ══════════ -->
+<section class="slide" data-slide="1" id="problema">
+  <div class="section-num">01 · O problema</div>
   <h2 class="slide-title">O lead some antes<br>de alguém <em>atender</em></h2>
-  <p class="slide-lead">Você paga R$20 mil por mês para trazer leads. Mas entre o clique e o primeiro contato humano, o lead já esfriou — ou foi para o concorrente.</p>
+  <p class="slide-lead">Você investe R$20 mil por mês para trazer leads. Mas entre o clique e o primeiro contato humano, a janela de ouro já fechou.</p>
 
   <div class="timeline">
     <div class="tl-item bad">
@@ -763,33 +1000,136 @@
       <div class="tl-time">15 min</div>
       <div class="tl-content">
         <div class="tl-label">O gestor distribui para o consultor</div>
-        <div class="tl-desc">O lead está esperando. Sem resposta, começa a duvidar.</div>
+        <div class="tl-desc">O lead está esperando. Sem resposta, começa a duvidar da seriedade da empresa.</div>
       </div>
     </div>
     <div class="tl-item bad">
       <div class="tl-time">1h+</div>
       <div class="tl-content">
         <div class="tl-label">O consultor entra em contato</div>
-        <div class="tl-desc">Lead esfriou. A janela de ouro fechou. Dinheiro no ralo.</div>
+        <div class="tl-desc">Lead esfriou. Janela de ouro fechada. Dinheiro no ralo.</div>
       </div>
     </div>
     <div class="tl-item good">
-      <div class="tl-time">2 min</div>
+      <div class="tl-time">&lt;2 min</div>
       <div class="tl-content">
-        <div class="tl-label">Com a Zaya — contato imediato</div>
-        <div class="tl-desc">A Zaya responde no WhatsApp em segundos. Ninguém precisa fazer nada.</div>
+        <div class="tl-label">Com a Lia — resposta imediata</div>
+        <div class="tl-desc">A Lia responde no WhatsApp em segundos, 24 horas por dia. Ninguém precisa fazer nada.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SLIDE 3 — O QUE É A ZAYA
-══════════════════════════════════════════ -->
-<section class="slide" data-slide="2">
-  <div class="slide-num">02 · A solução</div>
-  <h2 class="slide-title">Zaya não é um<br><em>chatbot</em>. É uma consultora.</h2>
-  <p class="slide-lead">A diferença está na conversa. Zaya escuta, valida, pergunta uma coisa por vez — como um ser humano de verdade faria no WhatsApp.</p>
+<!-- ══════════ SLIDE 3 — O CICLO DE VENDAS ══════════ -->
+<section class="slide" data-slide="2" id="ciclo">
+  <div class="section-num">02 · O ciclo de vendas</div>
+  <h2 class="slide-title">Como o tempo<br><em>impacta</em> o fechamento</h2>
+  <p class="slide-lead">A maioria dos leads fecha entre 12 e 22 dias — mas leads que chegam prontos podem fechar em 3 a 4 dias. A Lia foi construída para identificar esses perfis e acelerar esse ciclo.</p>
+
+  <div class="ciclo-grid">
+    <div class="ciclo-item normal">
+      <div class="ciclo-num">12–22</div>
+      <div class="ciclo-label">dias · ciclo<br>normal de fechamento</div>
+    </div>
+    <div class="ciclo-item fast">
+      <div class="ciclo-num">3–4</div>
+      <div class="ciclo-label">dias · lead que<br>chega pronto (quente)</div>
+    </div>
+    <div class="ciclo-item normal">
+      <div class="ciclo-num">15</div>
+      <div class="ciclo-label">dias · reativação<br>de lead morno</div>
+    </div>
+    <div class="ciclo-item lia">
+      <div class="ciclo-num">&lt;2</div>
+      <div class="ciclo-label" style="color:rgba(255,255,255,0.4)">min · resposta<br>da Lia ao lead</div>
+    </div>
+  </div>
+
+  <div class="pull-quote" style="margin-top:28px;">
+    <p>Leads que chegam prontos existem — são raros, mas existem. A Lia os identifica no primeiro minuto e prioriza o handoff imediato para o consultor.</p>
+    <cite>Informação de consultor sênior de expansão da empresa</cite>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 4 — A IA ATUAL vs LIA ══════════ -->
+<section class="slide" data-slide="3">
+  <div class="section-num">03 · A comparação real</div>
+  <h2 class="slide-title">A IA atual<br>versus a <em>Lia</em></h2>
+  <p class="slide-lead">A empresa já tem uma IA. Ela faz boas-vindas, informa documentação, responde perguntas básicas. Mas ela para onde a conversa começa de verdade.</p>
+
+  <div class="ia-compare">
+    <div class="ia-col atual">
+      <div class="ia-header">❌ IA atual da empresa</div>
+      <div class="ia-items">
+        <div class="ia-item"><span class="icon">—</span><span>Faz boas-vindas e informa sobre a marca</span></div>
+        <div class="ia-item"><span class="icon">—</span><span>Menciona documentação disponível</span></div>
+        <div class="ia-item"><span class="icon">—</span><span>Responde perguntas simples sobre investimento</span></div>
+        <div class="ia-item"><span class="icon">—</span><span>Sempre termina em perguntas sem resposta</span></div>
+        <div class="ia-item"><span class="icon">—</span><span>Não qualifica o lead — passa tudo igual para o consultor</span></div>
+        <div class="ia-item"><span class="icon">—</span><span>Não identifica temperatura nem urgência</span></div>
+        <div class="ia-item"><span class="icon">—</span><span>O consultor ainda começa do zero</span></div>
+      </div>
+    </div>
+    <div class="ia-col lia">
+      <div class="ia-header">✓ Lia IA</div>
+      <div class="ia-items">
+        <div class="ia-item"><span class="icon">✦</span><span>Conversa fluida — o lead não percebe que é IA</span></div>
+        <div class="ia-item"><span class="icon">✦</span><span>Informa investimento de forma estratégica e contextualizada</span></div>
+        <div class="ia-item"><span class="icon">✦</span><span>Qualifica capital, motivação, urgência e decisores</span></div>
+        <div class="ia-item"><span class="icon">✦</span><span>Classifica: QUENTE · MORNO · FRIO automaticamente</span></div>
+        <div class="ia-item"><span class="icon">✦</span><span>Identifica e acelera leads prontos (3–4 dias)</span></div>
+        <div class="ia-item"><span class="icon">✦</span><span>Gera resumo completo: o consultor chega para fechar</span></div>
+        <div class="ia-item"><span class="icon">✦</span><span>Vende ativamente a ideia do "negócio sem funcionário"</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 5 — O INVESTIMENTO ══════════ -->
+<section class="slide" data-slide="4" id="investimento">
+  <div class="section-num">04 · O investimento</div>
+  <h2 class="slide-title">Números que a Lia<br><em>domina</em> na conversa</h2>
+  <p class="slide-lead">A Lia conhece cada faixa de investimento — e usa esse conhecimento de forma estratégica para qualificar o lead e orientá-lo pelo caminho certo.</p>
+
+  <div class="invest-table">
+    <div class="invest-row header">
+      <span>Componente</span>
+      <span>Faixa de investimento</span>
+      <span>Observação</span>
+    </div>
+    <div class="invest-row">
+      <span class="invest-item">Taxa de franquia</span>
+      <span class="invest-range">R$ 20.000 – R$ 25.000</span>
+      <span class="invest-note">Entrada inicial</span>
+    </div>
+    <div class="invest-row">
+      <span class="invest-item">Montagem do espaço</span>
+      <span class="invest-range">R$ 35.000 – R$ 50.000</span>
+      <span class="invest-note">Obra e adaptação</span>
+    </div>
+    <div class="invest-row">
+      <span class="invest-item">Máquinas e equipamentos</span>
+      <span class="invest-range">R$ 28.000 – R$ 32.000</span>
+      <span class="invest-note"><span class="badge-financiavel">Financiável</span></span>
+    </div>
+    <div class="invest-row total">
+      <span class="invest-item">Total estimado</span>
+      <span class="invest-range"><strong>R$ 83.000 – R$ 107.000</strong></span>
+      <span class="invest-note">Parte pode ser financiada</span>
+    </div>
+  </div>
+
+  <div class="destaque-phrase" style="margin-top: 28px;">
+    <h3>Um negócio que não precisa de funcionário.</h3>
+    <p>Operação 100% self-service. Gestão remota pelo celular. Aberto 24h sem ninguém presente. Para o perfil certo, esse é o argumento que fecha o negócio.</p>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 6 — A LIA ══════════ -->
+<section class="slide" data-slide="5" id="solucao">
+  <div class="section-num">05 · A solução</div>
+  <h2 class="slide-title">Lia não é um<br><em>chatbot</em>. É uma consultora.</h2>
+  <p class="slide-lead">A diferença está na conversa. Lia escuta, valida, pergunta uma coisa por vez — e sabe exatamente quando usar o argumento certo.</p>
 
   <div class="compare">
     <div class="compare-col before">
@@ -803,42 +1143,87 @@
       </div>
     </div>
     <div class="compare-col after">
-      <div class="compare-header">✓ Zaya IA</div>
+      <div class="compare-header">✓ Lia IA</div>
       <div class="compare-items">
         <div class="compare-item"><span class="icon">✦</span><span>Conversa fluida, como WhatsApp de verdade</span></div>
-        <div class="compare-item"><span class="icon">✦</span><span>Uma pergunta de cada vez, com empatia</span></div>
-        <div class="compare-item"><span class="icon">✦</span><span>Valida o que o lead diz antes de avançar</span></div>
+        <div class="compare-item"><span class="icon">✦</span><span>Uma pergunta de cada vez, com empatia real</span></div>
         <div class="compare-item"><span class="icon">✦</span><span>Usa o nome da pessoa naturalmente</span></div>
-        <div class="compare-item"><span class="icon">✦</span><span>Lead sente que está falando com alguém real</span></div>
+        <div class="compare-item"><span class="icon">✦</span><span>Apresenta o argumento do "negócio sem funcionário" na hora certa</span></div>
+        <div class="compare-item"><span class="icon">✦</span><span>Lead sente que está falando com alguém de verdade</span></div>
       </div>
     </div>
   </div>
 
   <div class="pull-quote">
-    <p>"O consultor não deve ser um captador de dados, mas um fechador de negócios. A Zaya devolve o tempo ao consultor e a atenção imediata ao lead."</p>
+    <p>"O consultor não deve ser um captador de dados, mas um fechador de negócios. A Lia devolve o tempo ao consultor e a atenção imediata ao lead."</p>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SLIDE 4 — COMO A CONVERSA FLUI
-══════════════════════════════════════════ -->
-<section class="slide" data-slide="3">
-  <div class="slide-num">03 · A conversa</div>
-  <h2 class="slide-title">Como a Zaya<br><em>conduz</em> o lead</h2>
-  <p class="slide-lead">Cada bloco da conversa tem um objetivo claro — e a Zaya nunca pressa o lead para o próximo passo antes da hora.</p>
+<!-- ══════════ SLIDE 7 — OS PERFIS ══════════ -->
+<section class="slide" data-slide="6">
+  <div class="section-num">06 · Os perfis de lead</div>
+  <h2 class="slide-title">Quem a Lia<br><em>identifica</em> na conversa</h2>
+  <p class="slide-lead">Cada lead chega com um perfil diferente. A Lia classifica automaticamente e adapta a abordagem — sem que o lead perceba a lógica por trás.</p>
+
+  <div class="perfis">
+    <div class="perfil">
+      <div class="perfil-badge quente">🏆</div>
+      <div>
+        <div class="perfil-title">O Diversificador</div>
+        <div class="perfil-sub">35–55 anos · Já tem negócio · Capital R$150k+ · Quer renda passiva</div>
+        <span class="perfil-tag quente">🔥 Quente</span>
+      </div>
+    </div>
+    <div class="perfil">
+      <div class="perfil-badge quente">💼</div>
+      <div>
+        <div class="perfil-title">O CLT Empreendedor</div>
+        <div class="perfil-sub">28–45 anos · CLT · Capital R$120k+ · Quer autonomia com segurança</div>
+        <span class="perfil-tag quente">🔥 Quente</span>
+      </div>
+    </div>
+    <div class="perfil">
+      <div class="perfil-badge morno">🔍</div>
+      <div>
+        <div class="perfil-title">O Curioso</div>
+        <div class="perfil-sub">Capital na fronteira · Ciclo longo · Reativar em 15 dias</div>
+        <span class="perfil-tag morno">🟡 Morno</span>
+      </div>
+    </div>
+    <div class="perfil">
+      <div class="perfil-badge frio">💭</div>
+      <div>
+        <div class="perfil-title">O Sonhador</div>
+        <div class="perfil-sub">Sem capital no momento · Encerrado com elegância</div>
+        <span class="perfil-tag frio">❄️ Frio</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="destaque-phrase" style="margin-top: 28px;">
+    <h3>Leads bons chegam prontos.<br>A Lia os encontra primeiro.</h3>
+    <p>A Lia não é só um qualificador — ela é uma caçadora de oportunidades. Quando um lead com capital disponível e urgência real aparece, a Lia reconhece o sinal e aciona o consultor imediatamente.</p>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 8 — A CONVERSA ══════════ -->
+<section class="slide" data-slide="7">
+  <div class="section-num">07 · A conversa</div>
+  <h2 class="slide-title">Como a Lia<br><em>conduz</em> o lead</h2>
+  <p class="slide-lead">Cada bloco da conversa tem um objetivo claro. A Lia nunca pressiona — mas nunca perde o fio condutor.</p>
 
   <div class="roteiro">
     <div class="rot-item">
       <div class="rot-num">1</div>
       <div>
         <div class="rot-title">Abertura calorosa — primeiros 2 minutos</div>
-        <div class="rot-msg">"Oi! Sou a Zaya, da equipe de expansão. Vi que você tem interesse em abrir uma lavanderia — que ótimo! Posso te fazer algumas perguntinhas rápidas?"</div>
+        <div class="rot-msg">"Oi! Sou a Lia, da equipe de expansão. Vi que você tem interesse em abrir uma lavanderia — que ótimo! Posso te fazer algumas perguntinhas rápidas?"</div>
       </div>
     </div>
     <div class="rot-item active">
       <div class="rot-num">2</div>
       <div>
-        <div class="rot-title">Entender a motivação</div>
+        <div class="rot-title">Entender a motivação — por que agora?</div>
         <div class="rot-msg">"Me conta — o que te fez pensar em ter um negócio próprio agora? Foi algo que você viu ou é um sonho que vinha pensando há um tempo?"</div>
       </div>
     </div>
@@ -849,15 +1234,22 @@
         <div class="rot-msg">"Você já tem uma ideia de quanto teria disponível para investir? Pergunto porque temos formatos diferentes — quero mostrar o que realmente faz sentido pro seu momento."</div>
       </div>
     </div>
-    <div class="rot-item">
+    <div class="rot-item active">
       <div class="rot-num">4</div>
+      <div>
+        <div class="rot-title">O argumento do negócio autônomo</div>
+        <div class="rot-msg">"Uma coisa que muita gente não sabe: esse modelo funciona sem funcionário fixo. Você gerencia tudo pelo celular — é um negócio que trabalha enquanto você dorme."</div>
+      </div>
+    </div>
+    <div class="rot-item">
+      <div class="rot-num">5</div>
       <div>
         <div class="rot-title">Identificar quem decide junto</div>
         <div class="rot-msg">"Você pensaria nisso sozinho ou tem alguém — cônjuge, sócio — que participa dessa decisão com você?"</div>
       </div>
     </div>
     <div class="rot-item">
-      <div class="rot-num">5</div>
+      <div class="rot-num">6</div>
       <div>
         <div class="rot-title">Handoff para o consultor</div>
         <div class="rot-msg">"Pelo que você me contou, acho que vale muito uma conversa com nosso especialista. Ele consegue te mostrar um cenário real, sem enrolação. Posso já conectar vocês?"</div>
@@ -866,13 +1258,11 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SLIDE 5 — RESUMO PARA O CONSULTOR
-══════════════════════════════════════════ -->
-<section class="slide" data-slide="4">
-  <div class="slide-num">04 · O handoff</div>
+<!-- ══════════ SLIDE 9 — HANDOFF ══════════ -->
+<section class="slide" data-slide="8">
+  <div class="section-num">08 · O handoff</div>
   <h2 class="slide-title">O consultor entra<br>já <em>sabendo tudo</em></h2>
-  <p class="slide-lead">Quando o lead está quente, a Zaya gera automaticamente um resumo completo. O consultor não começa do zero — chega para fechar.</p>
+  <p class="slide-lead">Quando o lead está quente, a Lia gera automaticamente um resumo completo. O consultor não começa do zero — chega para fechar.</p>
 
   <div class="resumo-card">
     <div class="resumo-tag">📋 Resumo do lead — enviado ao consultor</div>
@@ -887,7 +1277,7 @@
       </div>
       <div class="resumo-row">
         <span class="resumo-key">Capital disponível</span>
-        <span class="resumo-val">~R$80k + aberto a financiamento</span>
+        <span class="resumo-val">~R$95k + aberto a financiamento das máquinas</span>
       </div>
       <div class="resumo-row">
         <span class="resumo-key">Quem decide junto</span>
@@ -902,25 +1292,23 @@
         <span class="resumo-val">Dúvida sobre retorno no primeiro ano</span>
       </div>
       <div class="resumo-row">
-        <span class="resumo-key">Tom emocional</span>
-        <span class="resumo-val">Animado mas cauteloso — precisa de segurança</span>
+        <span class="resumo-key">Argumento que funcionou</span>
+        <span class="resumo-val">Negócio sem funcionário — gestão remota pelo celular</span>
       </div>
       <div class="resumo-row">
         <span class="resumo-key">Próximo passo</span>
         <span class="resumo-val">Reunião incluindo a esposa para esclarecer dúvidas</span>
       </div>
     </div>
-    <span class="temp-badge">🔥 LEAD QUENTE</span>
+    <span class="temp-badge">🔥 LEAD QUENTE · 3–4 DIAS PARA FECHAR</span>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SLIDE 6 — ARQUITETURA TÉCNICA
-══════════════════════════════════════════ -->
-<section class="slide" data-slide="5">
-  <div class="slide-num">05 · Como funciona por dentro</div>
+<!-- ══════════ SLIDE 10 — ARQUITETURA ══════════ -->
+<section class="slide" data-slide="9">
+  <div class="section-num">09 · Como funciona por dentro</div>
   <h2 class="slide-title">A <em>arquitetura</em><br>em linguagem simples</h2>
-  <p class="slide-lead">Três peças que trabalham juntas. Você não precisa entender cada detalhe — só precisa saber que é simples de manter e barato de rodar.</p>
+  <p class="slide-lead">Três peças que trabalham juntas. Simples de manter, barato de rodar.</p>
 
   <div class="arch">
     <div class="arch-row">
@@ -953,7 +1341,7 @@
         <span class="arch-emoji">🧠</span>
         <div>
           <div class="arch-name">Claude (Anthropic)</div>
-          <div class="arch-desc">O cérebro — a inteligência por trás da conversa</div>
+          <div class="arch-desc">O cérebro — a inteligência por trás da Lia</div>
         </div>
       </div>
     </div>
@@ -970,7 +1358,7 @@
         <span class="arch-emoji">👤</span>
         <div>
           <div class="arch-name">Consultor recebe resumo</div>
-          <div class="arch-desc">Chega no lead quente, já preparado</div>
+          <div class="arch-desc">Chega no lead quente, já preparado para fechar</div>
         </div>
       </div>
     </div>
@@ -981,13 +1369,11 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SLIDE 7 — ROI
-══════════════════════════════════════════ -->
-<section class="slide" data-slide="6">
-  <div class="slide-num">06 · Os números</div>
+<!-- ══════════ SLIDE 11 — ROI ══════════ -->
+<section class="slide" data-slide="10" id="roi">
+  <div class="section-num">10 · Os números</div>
   <h2 class="slide-title">O impacto<br><em>financeiro</em> direto</h2>
-  <p class="slide-lead">Cada minuto de atraso no contato com um lead representa dinheiro que não voltou. A Zaya resolve exatamente esse ponto.</p>
+  <p class="slide-lead">Cada minuto de atraso no contato com um lead representa dinheiro que não voltou. A Lia resolve exatamente esse ponto.</p>
 
   <div class="roi-grid">
     <div class="roi-card">
@@ -999,14 +1385,12 @@
       <div class="roi-label">janela de ouro para<br>o primeiro contato</div>
     </div>
     <div class="roi-card">
-      <div class="roi-card">
       <div class="roi-num">&lt;R$500</div>
-      <div class="roi-label">custo mensal<br>de operação da Zaya</div>
-      </div>
+      <div class="roi-label">custo mensal<br>de operação da Lia</div>
     </div>
     <div class="roi-card">
       <div class="roi-num">24/7</div>
-      <div class="roi-label">disponibilidade —<br>feriado, madrugada, fim de semana</div>
+      <div class="roi-label">disponibilidade total —<br>feriado, madrugada, fim de semana</div>
     </div>
     <div class="roi-card">
       <div class="roi-num">0s</div>
@@ -1019,22 +1403,20 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SLIDE 8 — FASES DO PROJETO
-══════════════════════════════════════════ -->
-<section class="slide" data-slide="7">
-  <div class="slide-num">07 · O plano</div>
+<!-- ══════════ SLIDE 12 — FASES ══════════ -->
+<section class="slide" data-slide="11">
+  <div class="section-num">11 · O plano</div>
   <h2 class="slide-title">Três fases,<br>sem <em>risco</em></h2>
-  <p class="slide-lead">A ideia é provar antes de investir. Começamos pequeno, medimos resultado, e só então expandimos.</p>
+  <p class="slide-lead">Provar antes de investir. Começamos pequeno, medimos resultado, e só então expandimos.</p>
 
   <div class="fases">
     <div class="fase">
       <div class="fase-num">01</div>
-      <div class="fase-title">POC — Prova de Conceito</div>
+      <div class="fase-title">Demo — Prova de Conceito</div>
       <div class="fase-items">
         Já está pronta e funcionando<br>
-        Demonstração ao vivo<br>
-        Claude vs GPT em tempo real<br>
+        Demonstração ao vivo em tempo real<br>
+        Lia ao vivo no navegador<br>
         Custo: zero adicional<br>
         Duração: hoje mesmo
       </div>
@@ -1043,7 +1425,7 @@
       <div class="fase-num">02</div>
       <div class="fase-title">MVP — Versão Real</div>
       <div class="fase-items">
-        Zaya no WhatsApp de verdade<br>
+        Lia no WhatsApp de verdade<br>
         n8n conectado ao fluxo de leads<br>
         Número dedicado (sem risco de ban)<br>
         Piloto com 100 leads reais<br>
@@ -1064,20 +1446,18 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SLIDE 9 — PRÓXIMOS PASSOS
-══════════════════════════════════════════ -->
-<section class="slide slide-final" data-slide="8">
-  <div class="slide-num" style="color:rgba(255,255,255,0.4)">08 · Próximos passos</div>
+<!-- ══════════ SLIDE 13 — PRÓXIMOS PASSOS ══════════ -->
+<section class="slide slide-final" data-slide="12">
+  <div class="section-num" style="color:rgba(255,255,255,0.35)">12 · Próximos passos</div>
   <h2 class="slide-title">O que <em>propomos</em><br>para hoje</h2>
-  <p class="slide-lead">A POC já está pronta. O próximo passo é simples: conversar, ver funcionando ao vivo, e decidir juntos o que faz sentido.</p>
+  <p class="slide-lead">A Demo já está pronta. O próximo passo é simples: ver funcionando ao vivo, e decidir juntos o que faz sentido.</p>
 
   <div class="next-steps">
     <div class="next-item">
       <span class="next-icon">💬</span>
       <div>
-        <div class="next-title">Ver a Zaya ao vivo</div>
-        <div class="next-desc">Demonstração da POC no celular — converse com a Zaya como se fosse um lead de verdade.</div>
+        <div class="next-title">Ver a Lia ao vivo</div>
+        <div class="next-desc">Demonstração no browser — converse com a Lia como se fosse um lead de verdade.</div>
       </div>
     </div>
     <div class="next-item">
@@ -1102,14 +1482,20 @@
       </div>
     </div>
   </div>
+
+  <div style="margin-top: 44px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; flex-wrap: gap;">
+    <a href="/demo" class="btn-primary" style="background: var(--accent2);">▶ Abrir Demo ao Vivo</a>
+    <span style="font-size: 0.72rem; color: rgba(255,255,255,0.25); letter-spacing: 0.06em;">Lia IA · Zafalao Tech · 2026</span>
+  </div>
 </section>
 
 <script>
   const slides = document.querySelectorAll('[data-slide]');
   const navDots = document.getElementById('navDots');
   const progressBar = document.getElementById('progressBar');
+  const topNav = document.getElementById('topNav');
 
-  // Cria dots de navegação
+  // Cria nav dots
   slides.forEach((_, i) => {
     const dot = document.createElement('button');
     dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
@@ -1117,25 +1503,26 @@
     navDots.appendChild(dot);
   });
 
-  // Observer para animar slides
+  // Scroll: nav border + progress
+  window.addEventListener('scroll', () => {
+    topNav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Observer
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-        const idx = entry.target.dataset.slide;
+        const idx = parseInt(entry.target.dataset.slide);
         document.querySelectorAll('.nav-dot').forEach((d, i) => {
-          d.classList.toggle('active', i == idx);
+          d.classList.toggle('active', i === idx);
         });
-        // Progress bar
-        const progress = (parseInt(idx) / (slides.length - 1)) * 100;
-        progressBar.style.width = progress + '%';
+        progressBar.style.width = (idx / (slides.length - 1) * 100) + '%';
       }
     });
-  }, { threshold: 0.4 });
+  }, { threshold: 0.35 });
 
   slides.forEach(s => observer.observe(s));
-
-  // Primeiro slide sempre visível
   slides[0].classList.add('visible');
 </script>
 </body>
