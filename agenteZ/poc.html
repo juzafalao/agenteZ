@@ -3,25 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zaya IA — POC: Claude vs GPT</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Zaya IA — Demo ao Vivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Archivo+Narrow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0c0f0a;
-    --surface: #141810;
-    --card: #191d14;
-    --border: #252a1f;
-    --border-light: #2e3527;
-    --claude: #a3e635;
-    --claude-dim: rgba(163,230,53,0.08);
-    --claude-glow: rgba(163,230,53,0.15);
-    --gpt: #fb923c;
-    --gpt-dim: rgba(251,146,60,0.08);
-    --gpt-glow: rgba(251,146,60,0.15);
-    --text: #d4dcc8;
-    --text-strong: #eef2e8;
-    --muted: #5c6650;
-    --muted2: #3d4435;
+    /* ── Paleta Zaya IA — idêntica ao deck ── */
+    --bg:           #0A2540;   /* azul principal */
+    --surface:      #0D3461;   /* azul secundário */
+    --card:         #0D3461;   /* cards escuros */
+    --border:       #1a4a7a;
+    --border-light: #1e5c9a;
+    --claude:       #00C9A7;   /* ciano — acento principal */
+    --claude-dim:   rgba(0,201,167,0.10);
+    --claude-glow:  rgba(0,201,167,0.18);
+    --gpt:          #00A8E0;   /* azul-ciano — acento GPT */
+    --gpt-dim:      rgba(0,168,224,0.10);
+    --gpt-glow:     rgba(0,168,224,0.18);
+    --text:         #b8cfe8;
+    --text-strong:  #e8f0f8;
+    --muted:        #4a7aaa;
+    --muted2:       #1e3a5a;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -30,29 +31,20 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Geist', sans-serif;
+    font-family: 'Archivo', sans-serif;
     font-size: 14px;
     line-height: 1.6;
     overflow-x: hidden;
     min-height: 100vh;
   }
 
-  /* Grain texture overlay */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.6;
-  }
+  /* grain removido — visual clean */
 
   /* SETUP OVERLAY */
   .setup-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(12,15,10,0.97);
+    background: rgba(10,37,64,0.97);
     backdrop-filter: blur(16px);
     z-index: 999;
     display: flex;
@@ -62,9 +54,9 @@
   }
 
   .setup-box {
-    background: var(--card);
+    background: var(--surface);
     border: 1px solid var(--border-light);
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 44px 40px;
     max-width: 520px;
     width: 100%;
@@ -89,13 +81,13 @@
   }
 
   .setup-logo-text {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'Archivo', sans-serif;
     font-size: 1.5rem;
     color: var(--text-strong);
   }
 
   .setup-box h2 {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'Archivo', sans-serif;
     font-weight: 400;
     font-size: 1.8rem;
     color: var(--text-strong);
@@ -136,7 +128,7 @@
     border-radius: 10px;
     padding: 11px 14px;
     color: var(--text);
-    font-family: 'Geist Mono', monospace;
+    font-family: 'Archivo Narrow', sans-serif;
     font-size: 0.8rem;
     outline: none;
     transition: border-color 0.2s;
@@ -157,8 +149,8 @@
   .start-btn {
     width: 100%;
     background: var(--claude);
-    color: #0c0f0a;
-    font-family: 'Geist', sans-serif;
+    color: #0A2540;
+    font-family: 'Archivo', sans-serif;
     font-weight: 600;
     font-size: 0.9rem;
     padding: 13px;
@@ -180,7 +172,7 @@
     font-size: 0.8rem;
     cursor: pointer;
     margin-top: 12px;
-    font-family: 'Geist', sans-serif;
+    font-family: 'Archivo', sans-serif;
     text-decoration: underline;
     text-underline-offset: 3px;
     width: 100%;
@@ -209,13 +201,13 @@
     align-items: center;
     gap: 7px;
     background: var(--claude-dim);
-    border: 1px solid rgba(163,230,53,0.15);
+    border: 1px solid rgba(0,201,167,0.2);
     color: var(--claude);
     font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+    font-weight: 600;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    padding: 5px 12px;
+    padding: 5px 14px;
     border-radius: 100px;
     margin-bottom: 16px;
   }
@@ -233,7 +225,7 @@
   }
 
   header h1 {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'Archivo', sans-serif;
     font-weight: 400;
     font-size: clamp(2.2rem, 4vw, 3.4rem);
     letter-spacing: -0.02em;
@@ -273,13 +265,13 @@
 
   .vs-chip.claude {
     background: var(--claude-dim);
-    border: 1px solid rgba(163,230,53,0.2);
+    border: 1px solid rgba(0,201,167,0.25);
     color: var(--claude);
   }
 
   .vs-chip.gpt {
     background: var(--gpt-dim);
-    border: 1px solid rgba(251,146,60,0.2);
+    border: 1px solid rgba(0,168,224,0.25);
     color: var(--gpt);
   }
 
@@ -320,8 +312,8 @@
     transition: border-color 0.3s;
   }
 
-  .chat-panel.claude-panel { border-color: rgba(163,230,53,0.15); }
-  .chat-panel.gpt-panel { border-color: rgba(251,146,60,0.15); }
+  .chat-panel.claude-panel { border-color: rgba(0,201,167,0.22); }
+  .chat-panel.gpt-panel { border-color: rgba(0,168,224,0.22); }
 
   .panel-header {
     padding: 14px 18px;
@@ -357,7 +349,7 @@
   .agent-model {
     font-size: 0.68rem;
     color: var(--muted);
-    font-family: 'Geist Mono', monospace;
+    font-family: 'Archivo Narrow', sans-serif;
     letter-spacing: 0.03em;
   }
 
@@ -380,7 +372,7 @@
     border-radius: 100px;
     cursor: pointer;
     transition: all 0.2s;
-    font-family: 'Geist', sans-serif;
+    font-family: 'Archivo', sans-serif;
   }
 
   .reset-btn:hover { border-color: var(--border-light); color: var(--text); }
@@ -450,12 +442,12 @@
 
   .claude-panel .msg-row.user .bubble {
     background: var(--claude-dim);
-    border: 1px solid rgba(163,230,53,0.15);
+    border: 1px solid rgba(0,201,167,0.2);
   }
 
   .gpt-panel .msg-row.user .bubble {
     background: var(--gpt-dim);
-    border: 1px solid rgba(251,146,60,0.15);
+    border: 1px solid rgba(0,168,224,0.2);
   }
 
   .typing {
@@ -498,7 +490,7 @@
     border-radius: 10px;
     padding: 9px 12px;
     color: var(--text);
-    font-family: 'Geist', sans-serif;
+    font-family: 'Archivo', sans-serif;
     font-size: 0.84rem;
     resize: none;
     min-height: 38px;
@@ -508,8 +500,8 @@
     line-height: 1.5;
   }
 
-  .claude-panel .chat-input:focus { border-color: rgba(163,230,53,0.3); }
-  .gpt-panel .chat-input:focus { border-color: rgba(251,146,60,0.3); }
+  .claude-panel .chat-input:focus { border-color: rgba(0,201,167,0.35); }
+  .gpt-panel .chat-input:focus { border-color: rgba(0,168,224,0.35); }
   .chat-input::placeholder { color: var(--muted2); }
 
   .send-btn {
@@ -525,8 +517,8 @@
     flex-shrink: 0;
   }
 
-  .claude-panel .send-btn { background: var(--claude); color: #0c0f0a; }
-  .gpt-panel .send-btn { background: var(--gpt); color: #0c0f0a; }
+  .claude-panel .send-btn { background: var(--claude); color: #0A2540; }
+  .gpt-panel .send-btn { background: var(--gpt); color: #0A2540; }
   .send-btn:hover { transform: scale(1.06); }
   .send-btn:active { transform: scale(0.96); }
   .send-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
@@ -555,8 +547,8 @@
     min-height: 140px;
   }
 
-  .summary-card.claude-summary { border-color: rgba(163,230,53,0.12); }
-  .summary-card.gpt-summary { border-color: rgba(251,146,60,0.12); }
+  .summary-card.claude-summary { border-color: rgba(0,201,167,0.18); }
+  .summary-card.gpt-summary { border-color: rgba(0,168,224,0.18); }
 
   .summary-header {
     display: flex;
@@ -648,7 +640,7 @@
     padding: 6px 12px;
     border-radius: 8px;
     cursor: pointer;
-    font-family: 'Geist', sans-serif;
+    font-family: 'Archivo', sans-serif;
     transition: all 0.2s;
   }
 
@@ -742,7 +734,7 @@
   .gpt-card .metric-bar { background: var(--gpt); }
 
   .metric-val {
-    font-family: 'Geist Mono', monospace;
+    font-family: 'Archivo Narrow', sans-serif;
     font-weight: 500;
     font-size: 0.78rem;
     min-width: 32px;
@@ -760,7 +752,7 @@
     font-size: 0.72rem;
     position: relative;
     z-index: 10;
-    font-family: 'Geist Mono', monospace;
+    font-family: 'Archivo Narrow', sans-serif;
   }
 
   /* MODE INDICATOR */
@@ -786,8 +778,8 @@
     border-radius: 100px;
   }
 
-  .mode-pill.live { border-color: rgba(163,230,53,0.2); color: var(--claude); background: var(--claude-dim); }
-  .mode-pill.demo { border-color: rgba(251,146,60,0.2); color: var(--gpt); background: var(--gpt-dim); }
+  .mode-pill.live { border-color: rgba(0,201,167,0.25); color: var(--claude); background: var(--claude-dim); }
+  .mode-pill.demo { border-color: rgba(0,168,224,0.25); color: var(--gpt); background: var(--gpt-dim); }
 </style>
 </head>
 <body>
@@ -801,7 +793,7 @@
       <span class="live-dot"></span>
       <span id="pocModeLabel">POC · Agente Zaya</span>
     </div>
-    <h1>Zaya <em>Claude</em><br>vs Zaya <em style="color:var(--gpt)">GPT</em></h1>
+    <h1>Zaya <em>Claude</em><br><span style="font-weight:300;font-size:0.7em;color:var(--muted)">vs</span> Zaya <em style="color:var(--gpt)">GPT‑4o</em></h1>
     <p>Converse como um lead e sinta na prática a diferença de humanização entre os dois modelos.</p>
   </div>
   <div class="vs-chips">
