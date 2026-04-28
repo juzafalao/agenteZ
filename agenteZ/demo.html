@@ -23,8 +23,8 @@ html { scroll-behavior: smooth; }
   --c2d:      rgba(139,92,246,0.08);
   --c2m:      rgba(139,92,246,0.18);
   --ink:      #E2E8F0;
-  --ink2:     #94A3B8;
-  --ink3:     #334155;
+  --ink2:     #CBD5E1;
+  --ink3:     #94A3B8;
   --white:    #FFFFFF;
   --red:      #EF4444;
   --amber:    #F59E0B;
@@ -987,7 +987,7 @@ async function sendMsg(panel) {
     detectTemp(panel, text + ' ' + reply);
   } catch (e) {
     hideTyping(panel);
-    addMsg(panel, 'agent', '⚠️ Erro de conexão. Verifique a API e tente novamente.');
+    addMsg(panel, 'agent', '⚠️ Erro: ' + (e.message || 'Falha na conexão. Verifique as chaves de API no Vercel.'));
     console.error(e);
   }
 
@@ -1002,8 +1002,9 @@ async function callClaude(history) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ provider: 'anthropic', system: LIA_PROMPT, messages: history, max_tokens: 300 })
   });
-  if (!r.ok) throw new Error('Claude ' + r.status);
   const d = await r.json();
+  if (!r.ok) throw new Error((d && d.error) ? d.error : 'Claude HTTP ' + r.status);
+  if (!d.content || !d.content[0]) throw new Error('Resposta inválida da API Claude: ' + JSON.stringify(d));
   return d.content[0].text;
 }
 
@@ -1014,8 +1015,9 @@ async function callGPT(history) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ provider: 'openai', messages: msgs, max_tokens: 300 })
   });
-  if (!r.ok) throw new Error('GPT ' + r.status);
   const d = await r.json();
+  if (!r.ok) throw new Error((d && d.error) ? d.error : 'GPT HTTP ' + r.status);
+  if (!d.choices || !d.choices[0]) throw new Error('Resposta inválida da API OpenAI: ' + JSON.stringify(d));
   return d.choices[0].message.content;
 }
 
