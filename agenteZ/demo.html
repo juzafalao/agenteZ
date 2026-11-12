@@ -689,7 +689,7 @@ footer span { color: var(--c1); }
       <div class="agent-logo">L</div>
       <div class="agent-info">
         <div class="agent-name">Lia</div>
-        <div class="agent-model">Anthropic · claude-sonnet-4-20250514</div>
+        <div class="agent-model" id="c1Model">Anthropic · Claude Sonnet</div>
       </div>
       <span class="online-pill">● ONLINE</span>
       <button class="reset-btn" onclick="resetChat('c1')">↺ Reset</button>
@@ -708,7 +708,7 @@ footer span { color: var(--c1); }
       <div class="agent-logo" style="background:var(--c2)">L</div>
       <div class="agent-info">
         <div class="agent-name">Lia</div>
-        <div class="agent-model">OpenAI · gpt-4o</div>
+        <div class="agent-model" id="c2Model">OpenAI · gpt-4o</div>
       </div>
       <span class="online-pill">● ONLINE</span>
       <button class="reset-btn" onclick="resetChat('c2')">↺ Reset</button>
@@ -1002,9 +1002,10 @@ async function callClaude(history) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ provider: 'anthropic', system: LIA_PROMPT, messages: history, max_tokens: 300 })
   });
-  const d = await r.json();
-  if (!r.ok) throw new Error((d && d.error) ? d.error : 'Claude HTTP ' + r.status);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error('Claude HTTP ' + r.status + ': ' + (d.error?.message || d.detail || JSON.stringify(d.error ?? d)));
   if (!d.content || !d.content[0]) throw new Error('Resposta inválida da API Claude: ' + JSON.stringify(d));
+  if (d.model) document.getElementById('c1Model').textContent = 'Anthropic · ' + d.model;
   return d.content[0].text;
 }
 
@@ -1015,9 +1016,10 @@ async function callGPT(history) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ provider: 'openai', messages: msgs, max_tokens: 300 })
   });
-  const d = await r.json();
-  if (!r.ok) throw new Error((d && d.error) ? d.error : 'GPT HTTP ' + r.status);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error('GPT HTTP ' + r.status + ': ' + (d.error?.message || d.detail || JSON.stringify(d.error ?? d)));
   if (!d.choices || !d.choices[0]) throw new Error('Resposta inválida da API OpenAI: ' + JSON.stringify(d));
+  if (d.model) document.getElementById('c2Model').textContent = 'OpenAI · ' + d.model;
   return d.choices[0].message.content;
 }
 
