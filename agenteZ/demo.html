@@ -966,7 +966,8 @@ async function sendMsg(panel) {
   btn.disabled = true;
 
   addMsg(panel, 'user', text);
-  hist[panel].push({ role: 'user', content: text });
+  const userMsg = { role: 'user', content: text };
+  hist[panel].push(userMsg);
   count[panel]++;
 
   showTyping(panel);
@@ -976,6 +977,7 @@ async function sendMsg(panel) {
     const reply = panel === 'c1'
       ? await callClaude(hist.c1)
       : await callGPT(hist.c2);
+    if (typeof reply !== 'string' || !reply.trim()) throw new Error('Resposta vazia do modelo');
 
     times[panel].push(Date.now() - t0);
     hideTyping(panel);
@@ -986,6 +988,11 @@ async function sendMsg(panel) {
     if (count[panel] >= 3) document.getElementById(panel + 'GenBtn').style.display = 'inline-block';
     detectTemp(panel, text + ' ' + reply);
   } catch (e) {
+    // Desfaz a mensagem do usuário para o histórico não ficar com dois "user" seguidos
+    if (hist[panel][hist[panel].length - 1] === userMsg) {
+      hist[panel].pop();
+      count[panel]--;
+    }
     hideTyping(panel);
     addMsg(panel, 'agent', '⚠️ Erro: ' + (e.message || 'Falha na conexão. Verifique as chaves de API no Vercel.'));
     console.error(e);
@@ -1004,9 +1011,11 @@ async function callClaude(history) {
   });
   const d = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error('Claude HTTP ' + r.status + ': ' + (d.error?.message || d.detail || JSON.stringify(d.error ?? d)));
-  if (!d.content || !d.content[0]) throw new Error('Resposta inválida da API Claude: ' + JSON.stringify(d));
+  if (!Array.isArray(d.content)) throw new Error('Resposta inválida da API Claude: ' + JSON.stringify(d));
+  const text = d.content.filter(b => b && b.type === 'text').map(b => b.text || '').join('');
+  if (!text.trim()) throw new Error('Claude respondeu sem texto (stop_reason: ' + d.stop_reason + '; blocos: ' + d.content.map(b => b.type).join(',') + ')');
   if (d.model) document.getElementById('c1Model').textContent = 'Anthropic · ' + d.model;
-  return d.content[0].text;
+  return text;
 }
 
 async function callGPT(history) {
@@ -1019,8 +1028,10 @@ async function callGPT(history) {
   const d = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error('GPT HTTP ' + r.status + ': ' + (d.error?.message || d.detail || JSON.stringify(d.error ?? d)));
   if (!d.choices || !d.choices[0]) throw new Error('Resposta inválida da API OpenAI: ' + JSON.stringify(d));
+  const content = d.choices[0].message?.content;
+  if (!content || !content.trim()) throw new Error('GPT respondeu sem texto (finish_reason: ' + d.choices[0].finish_reason + ')');
   if (d.model) document.getElementById('c2Model').textContent = 'OpenAI · ' + d.model;
-  return d.choices[0].message.content;
+  return content;
 }
 
 // ── SUMMARY ──────────────────────────────────────────────────
