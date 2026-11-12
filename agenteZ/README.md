@@ -24,6 +24,8 @@ agenteZ/
 4. Configure as variáveis de ambiente:
    - `ANTHROPIC_API_KEY` → sua chave da Anthropic
    - `OPENAI_API_KEY` → sua chave da OpenAI
+   - `ANTHROPIC_MODEL` → (opcional) modelo Claude usado na demo; padrão `claude-sonnet-5-5`
+   - `ALLOWED_ORIGIN` → (opcional) origem permitida no CORS do proxy `/api/chat`; padrão `https://agente-z.vercel.app`
 5. Clique em Deploy
 
 ## Links
